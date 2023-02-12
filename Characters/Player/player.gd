@@ -31,10 +31,7 @@ func _unhandled_input(event):
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 		else:
-			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-
-	if Input.is_action_just_pressed("quit"):
-		get_tree().quit()		
+			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED	
 
 func _physics_process(delta):
 	if not is_multiplayer_authority(): return

@@ -55,14 +55,14 @@ func _on_host_button_pressed():
 			var existing_player_ids = get_existing_player_ids()
 
 			await get_tree().create_timer(1).timeout			
-			rpc("EmmitMapSelected", selected_map_index)
-			rpc("add_existing_players", existing_player_ids)
+			EmmitMapSelected.rpc(selected_map_index)
+			add_existing_players.rpc(existing_player_ids)
 	)
 	enet_peer.peer_disconnected.connect(		
 		func(peer_id):
 			remove_player(peer_id)
 			await get_tree().create_timer(1).timeout
-			rpc("remove_player", peer_id)
+			remove_player.rpc(peer_id)
 	)
 	
 func _on_join_button_pressed():
@@ -104,8 +104,8 @@ func remove_player(peer_id) -> int:
 	if(found_player_index > -1):
 		players.remove_at(found_player_index)
 		players_list.remove_item(found_player_index)	
-			
-	emit_signal("RemovedPlayer", peer_id)	
+	
+	RemovedPlayer.emit(peer_id)	
 	
 	return found_player_index
 	
@@ -124,19 +124,19 @@ func EmmitMapSelected(map_scene_index: int):
 	map_selector.select(map_scene_index)
 	
 	if(map_scenes.size() > 0):
-		emit_signal("MapSelected", map_scenes[map_scene_index])
+		MapSelected.emit(map_scenes[map_scene_index])		
 	else:	
-		emit_signal("ClearMap")
+		ClearMap.emit()		
 		
 
 func _on_select_map_input_item_selected(index):	
 	selected_map_index = index
-	emit_signal("MapSelected", map_scenes[index])
-	rpc("EmmitMapSelected", index)
+	MapSelected.emit(map_scenes[index])	
+	EmmitMapSelected.rpc(index)	
 	
 func _on_item_list_property_list_changed():
 	print("_on_item_list_property_list_changed")
 
 
 func _on_start_game_button_pressed():
-	emit_signal("StartGame", players)
+	StartGame.emit(players)	
