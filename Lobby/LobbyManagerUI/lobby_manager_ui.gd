@@ -36,6 +36,8 @@ func _process(delta):
 	pass
 	
 func _on_host_button_pressed():
+	players_list.clear()
+	
 	enet_peer.create_server(int(host_port_number.text))
 	multiplayer.multiplayer_peer = enet_peer
 	
@@ -64,6 +66,7 @@ func _on_host_button_pressed():
 	)
 	
 func _on_join_button_pressed():
+	players_list.clear()
 	enet_peer.create_client(join_ip_address.text, int(join_port_number.text))
 	multiplayer.multiplayer_peer = enet_peer
 
