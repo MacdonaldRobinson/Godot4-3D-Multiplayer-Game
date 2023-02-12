@@ -1,0 +1,51 @@
+[gd_scene load_steps=2 format=3 uid="uid://beum2ixbk00sb"]
+
+[ext_resource type="Script" path="res://Lobby/LobbyManagerUI/HostUI/host_ui.gd" id="1_0atv1"]
+
+[node name="HostUI" type="MarginContainer"]
+size_flags_horizontal = 0
+script = ExtResource("1_0atv1")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+color = Color(0, 0, 0, 0.419608)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="HostGame" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Host Game"
+horizontal_alignment = 1
+
+[node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="MarginContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer2"]
+layout_mode = 2
+
+[node name="PortNumber" type="HBoxContainer" parent="VBoxContainer/MarginContainer2/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="PortNumberLabel" type="Label" parent="VBoxContainer/MarginContainer2/MarginContainer/PortNumber"]
+layout_mode = 2
+text = "Port Number:"
+
+[node name="PortNumberInput" type="LineEdit" parent="VBoxContainer/MarginContainer2/MarginContainer/PortNumber"]
+layout_mode = 2
+
+[node name="HostButtonFields" type="VBoxContainer" parent="VBoxContainer/MarginContainer2/MarginContainer"]
+layout_mode = 2
+
+[node name="HostButton" type="Button" parent="VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+text = "Host"

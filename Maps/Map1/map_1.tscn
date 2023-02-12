@@ -1,0 +1,29 @@
+[gd_scene load_steps=6 format=3 uid="uid://dx2di36fgl7q"]
+
+[ext_resource type="Texture2D" uid="uid://cfan7hyxhi51t" path="res://icon.svg" id="1_uwnvh"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v6bkv"]
+albedo_texture = ExtResource("1_uwnvh")
+uv1_triplanar = true
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_yp2ip"]
+
+[sub_resource type="Sky" id="Sky_ne3b1"]
+sky_material = SubResource("ProceduralSkyMaterial_yp2ip")
+
+[sub_resource type="Environment" id="Environment_y88o4"]
+background_mode = 2
+sky = SubResource("Sky_ne3b1")
+
+[node name="Map1" type="Node3D"]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+material_overlay = SubResource("StandardMaterial3D_v6bkv")
+use_collision = true
+size = Vector3(100, 1, 100)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_y88o4")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.48998, 3.36131)

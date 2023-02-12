@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://dwemry3kfgodi"]
+
+[ext_resource type="PackedScene" uid="uid://bu1hfecohiqq5" path="res://Lobby/LobbyManagerUI/lobby_manager_ui.tscn" id="1_7b6y8"]
+[ext_resource type="Script" path="res://Lobby/lobby.gd" id="1_p1dsc"]
+
+[node name="Lobby" type="Node3D"]
+script = ExtResource("1_p1dsc")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="LobbyManagerUI" parent="CanvasLayer" instance=ExtResource("1_7b6y8")]
+
+[node name="MapContainer" type="Node3D" parent="."]
+
+[node name="PlayersContainer" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.15326, 0)
+
+[connection signal="AddedPlayer" from="CanvasLayer/LobbyManagerUI" to="." method="_on_lobby_manager_ui_added_player"]
+[connection signal="ClearMap" from="CanvasLayer/LobbyManagerUI" to="." method="_on_lobby_manager_ui_clear_map"]
+[connection signal="MapSelected" from="CanvasLayer/LobbyManagerUI" to="." method="_on_lobby_manager_ui_map_selected"]
+[connection signal="StartGame" from="CanvasLayer/LobbyManagerUI" to="." method="_on_lobby_manager_ui_start_game"]

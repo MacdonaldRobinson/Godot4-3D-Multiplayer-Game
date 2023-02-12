@@ -1,0 +1,192 @@
+[gd_scene load_steps=2 format=3 uid="uid://bu1hfecohiqq5"]
+
+[ext_resource type="Script" path="res://Lobby/LobbyManagerUI/lobby_manager_ui.gd" id="1_ni4bo"]
+
+[node name="LobbyManagerUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ni4bo")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="Host_Join" type="MarginContainer" parent="MarginContainer/HBoxContainer/VBoxContainer3"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join"]
+layout_mode = 2
+
+[node name="Host" type="MarginContainer" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer"]
+layout_mode = 2
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host"]
+layout_mode = 2
+size_flags_vertical = 3
+color = Color(0, 0, 0, 0.419608)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host"]
+layout_mode = 2
+
+[node name="HostGame" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer"]
+layout_mode = 2
+text = "Host Game"
+horizontal_alignment = 1
+
+[node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="MarginContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2"]
+layout_mode = 2
+
+[node name="SelectMap" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer"]
+layout_mode = 2
+
+[node name="SelectMapLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/SelectMap"]
+layout_mode = 2
+text = "Select Map:"
+
+[node name="SelectMapInput" type="OptionButton" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/SelectMap"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PortNumber" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer"]
+layout_mode = 2
+
+[node name="PortNumberLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/PortNumber"]
+layout_mode = 2
+text = "Port Number:"
+
+[node name="PortNumberInput" type="LineEdit" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/PortNumber"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "1111"
+
+[node name="HostButtonFields" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer"]
+layout_mode = 2
+
+[node name="ExternalIP" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields"]
+layout_mode = 2
+
+[node name="ExternalIPLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/ExternalIP"]
+layout_mode = 2
+text = "External IP:"
+
+[node name="ExternalIPInput" type="LineEdit" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/ExternalIP"]
+layout_mode = 2
+
+[node name="HostButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+text = "Host"
+
+[node name="StartGameButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields"]
+layout_mode = 2
+disabled = true
+text = "Start Game"
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 50
+
+[node name="Join" type="MarginContainer" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Join"]
+layout_mode = 2
+size_flags_vertical = 3
+color = Color(0, 0, 0, 0.419608)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Join"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="JoinExistingGame" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Join/VBoxContainer"]
+layout_mode = 2
+text = "Join A Game"
+horizontal_alignment = 1
+
+[node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Join/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="MarginContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Join/VBoxContainer/MarginContainer2"]
+layout_mode = 2
+
+[node name="IPAddressFields" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Join/VBoxContainer/MarginContainer2/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="IPAddressLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Join/VBoxContainer/MarginContainer2/MarginContainer/IPAddressFields"]
+layout_mode = 2
+text = "IP Address:"
+
+[node name="IPAddressInput" type="LineEdit" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Join/VBoxContainer/MarginContainer2/MarginContainer/IPAddressFields"]
+layout_mode = 2
+theme_override_constants/minimum_character_width = 20
+text = "localhost"
+
+[node name="JoinPortNumberFields" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Join/VBoxContainer/MarginContainer2/MarginContainer"]
+layout_mode = 2
+
+[node name="JoinPortNumberLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Join/VBoxContainer/MarginContainer2/MarginContainer/JoinPortNumberFields"]
+layout_mode = 2
+text = "Port Number"
+
+[node name="JoinPortNumberInput" type="LineEdit" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Join/VBoxContainer/MarginContainer2/MarginContainer/JoinPortNumberFields"]
+layout_mode = 2
+theme_override_constants/minimum_character_width = 20
+text = "1111"
+
+[node name="JoinButtonFields" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Join/VBoxContainer/MarginContainer2/MarginContainer"]
+layout_mode = 2
+
+[node name="JoinButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Join/VBoxContainer/MarginContainer2/MarginContainer/JoinButtonFields"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+text = "Join"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="PlayersList" type="ItemList" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(200, 360)
+layout_mode = 2
+select_mode = 1
+item_count = 2
+item_0/text = "test"
+item_1/text = "test2"
+
+[connection signal="item_selected" from="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/SelectMap/SelectMapInput" to="." method="_on_select_map_input_item_selected"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/HostButton" to="." method="_on_host_button_pressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/StartGameButton" to="." method="_on_start_game_button_pressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Join/VBoxContainer/MarginContainer2/MarginContainer/JoinButtonFields/JoinButton" to="." method="_on_join_button_pressed"]
+[connection signal="property_list_changed" from="MarginContainer/HBoxContainer/VBoxContainer/PlayersList" to="." method="_on_item_list_property_list_changed"]
