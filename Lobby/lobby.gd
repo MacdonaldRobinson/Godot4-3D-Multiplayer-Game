@@ -40,3 +40,7 @@ func _on_lobby_manager_ui_added_player(scene: LobbyManagerUI.PlayerScene):
 
 func _on_lobby_manager_ui_start_game():
 	lobby_manager_ui.hide()
+
+
+func _on_lobby_manager_ui_removed_player(peer_id):
+	print("_on_lobby_manager_ui_removed_player", peer_id)

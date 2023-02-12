@@ -6,7 +6,8 @@ class MapScene:
 	var map_scene: PackedScene
 	
 class PlayerScene:
-	var player_name: String
+	var peer_id: int
+	var player_name: String	
 	var player_scene: PackedScene
 
 @onready var host_port_number = $MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/PortNumber/PortNumberInput
@@ -26,6 +27,7 @@ const Player = preload("res://Characters/Player/player.tscn")
 signal MapSelected(map_scene_path:MapScene)
 signal ClearMap()
 signal AddedPlayer(player_scene:PlayerScene)
+signal RemovedPlayer(peer_id:int)
 signal StartGame()
 
 func _ready():	
@@ -50,6 +52,7 @@ func _on_host_button_pressed():
 	add_player(multiplayer.get_unique_id())
 	
 	enet_peer.peer_connected.connect(add_player)
+	enet_peer.peer_disconnected.connect(remove_player)
 	
 func _on_join_button_pressed():
 	enet_peer.create_client(join_ip_address.text, int(join_port_number.text))
@@ -58,6 +61,7 @@ func _on_join_button_pressed():
 func add_player(peer_id):
 	print("add_player", peer_id)
 	var player_scene = PlayerScene.new()
+	player_scene.peer_id = peer_id
 	player_scene.player_name = str(peer_id)
 	player_scene.player_scene = Player
 		
@@ -65,6 +69,18 @@ func add_player(peer_id):
 	players_list.add_item(player_scene.player_name)
 	
 	emit_signal("AddedPlayer", player_scene)
+	
+func remove_player(peer_id):
+	print("remove_player", peer_id)
+	
+	var playerCounter = 0
+	for player in players:
+		if(player.peer_id == peer_id):
+			players.remove_at(playerCounter)
+			players_list.remove_item(playerCounter)
+		playerCounter +=1
+	
+	emit_signal("RemovedPlayer", peer_id)	
 	
 
 func _on_select_map_input_item_selected(index):
