@@ -19,7 +19,7 @@ signal MapSelected(map:Map)
 signal ClearMap()
 signal AddedPlayer(player:Player)
 signal RemovedPlayer(peer_id:int)
-signal StartGame()
+signal StartGame(players:Array[Player])
 
 func _ready():	
 	var map_scene_1:Map = preload("res://Maps/Map1/map_1.tscn").instantiate()
@@ -91,7 +91,7 @@ func add_player(peer_id):
 	players.push_back(player)
 	players_list.add_item(player.name)
 		
-	emit_signal("AddedPlayer", player)
+	#emit_signal("AddedPlayer", player)
 
 @rpc
 func remove_player(peer_id) -> int:
@@ -136,4 +136,4 @@ func _on_item_list_property_list_changed():
 
 
 func _on_start_game_button_pressed():
-	emit_signal("StartGame")
+	emit_signal("StartGame", players)
