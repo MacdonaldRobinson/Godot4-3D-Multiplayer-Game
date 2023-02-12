@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://dx2di36fgl7q"]
+[gd_scene load_steps=7 format=3 uid="uid://b2nj73nv1hj5u"]
 
-[ext_resource type="Texture2D" uid="uid://cfan7hyxhi51t" path="res://icon.svg" id="1_uwnvh"]
-[ext_resource type="Script" path="res://Maps/Map1/map_1.gd" id="1_xo1v0"]
+[ext_resource type="Texture2D" uid="uid://cfan7hyxhi51t" path="res://icon.svg" id="1_doltk"]
+[ext_resource type="Script" path="res://Maps/Map2/map_2.gd" id="1_kuwg4"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v6bkv"]
-albedo_texture = ExtResource("1_uwnvh")
+albedo_color = Color(1, 0, 0.0156863, 1)
+albedo_texture = ExtResource("1_doltk")
 uv1_triplanar = true
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_yp2ip"]
@@ -16,8 +17,8 @@ sky_material = SubResource("ProceduralSkyMaterial_yp2ip")
 background_mode = 2
 sky = SubResource("Sky_ne3b1")
 
-[node name="Map1" type="Node3D"]
-script = ExtResource("1_xo1v0")
+[node name="Map2" type="Node3D"]
+script = ExtResource("1_kuwg4")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 material_overlay = SubResource("StandardMaterial3D_v6bkv")
@@ -28,10 +29,10 @@ size = Vector3(100, 1, 100)
 environment = SubResource("Environment_y88o4")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.821995, 0.569495, 0, -0.569495, 0.821995, 0, 4.4604, 9.72059)
+transform = Transform3D(1, 0, 0, 0, 0.79936, 0.600853, 0, -0.600853, 0.79936, 0, 3.66109, 8.20853)
 
 [node name="Players" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.86503, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.44945, -1.5023)
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("res://Characters/Player/player.tscn")

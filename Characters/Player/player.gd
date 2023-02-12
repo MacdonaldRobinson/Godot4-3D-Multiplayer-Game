@@ -1,4 +1,5 @@
 extends CharacterBody3D
+class_name Player
 
 const SPEED = 10.0
 const JUMP_VELOCITY = 10
@@ -8,25 +9,15 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 @onready var camera = $Camera3D
 
-func _enter_tree():
-	print(str(name))
-	set_multiplayer_authority(str(name).to_int())
-
 func _ready():
-	print(is_multiplayer_authority())
-	if not is_multiplayer_authority():
-		return
-		
+	
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	camera.current = true
 	
 func _unhandled_input(event):
 	print("_unhandled_input", is_multiplayer_authority())
-	
-	if not is_multiplayer_authority():
-		return
 			
-	if event is InputEventMouseMotion:
+	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED and event is InputEventMouseMotion:
 		rotate_y(-event.relative.x * 0.005)
 		camera.rotate_x(-event.relative.y * 0.005)
 		camera.rotation.x = clamp(camera.rotation.x, -PI/2, PI/2)
@@ -41,9 +32,6 @@ func _unhandled_input(event):
 		get_tree().quit()		
 
 func _physics_process(delta):
-	if not is_multiplayer_authority():
-		return
-			
 	# Add the gravity.
 	if not is_on_floor():
 		velocity.y -= gravity * delta

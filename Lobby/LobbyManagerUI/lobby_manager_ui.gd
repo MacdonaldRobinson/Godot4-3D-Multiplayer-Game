@@ -1,98 +1,137 @@
 extends Control
 class_name LobbyManagerUI
 
-class MapScene:
-	var map_name: String
-	var map_scene: PackedScene
-	
-class PlayerScene:
-	var peer_id: int
-	var player_name: String	
-	var player_scene: PackedScene
-
 @onready var host_port_number = $MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/PortNumber/PortNumberInput
-@onready var map_selector = $MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/SelectMap/SelectMapInput
+@onready var map_selector = $MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/SelectMap/SelectMapInput
 @onready var players_list = $MarginContainer/HBoxContainer/VBoxContainer/PlayersList
 @onready var join_ip_address = $MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Join/VBoxContainer/MarginContainer2/MarginContainer/IPAddressFields/IPAddressInput
 @onready var join_port_number = $MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Join/VBoxContainer/MarginContainer2/MarginContainer/JoinPortNumberFields/JoinPortNumberInput
 @onready var host_external_ip_address = $MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/ExternalIP/ExternalIPInput
 @onready var start_game = $MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/StartGameButton
 
-var map_scenes: Array[MapScene]
-var players: Array[PlayerScene]
+var selected_map_index = 0
+var map_scenes: Array[Map]
+var players: Array[Player]
 
 var enet_peer = ENetMultiplayerPeer.new()
-const Player = preload("res://Characters/Player/player.tscn")
 
-signal MapSelected(map_scene_path:MapScene)
+signal MapSelected(map:Map)
 signal ClearMap()
-signal AddedPlayer(player_scene:PlayerScene)
+signal AddedPlayer(player:Player)
 signal RemovedPlayer(peer_id:int)
 signal StartGame()
 
 func _ready():	
-	var map_scene = MapScene.new()
-	map_scene.map_name = "Map 1"
-	map_scene.map_scene = preload("res://Maps/Map1/map_1.tscn")	
+	var map_scene_1:Map = preload("res://Maps/Map1/map_1.tscn").instantiate()
+	var map_scene_2:Map = preload("res://Maps/Map2/map_2.tscn").instantiate()
 	
-	map_scenes.push_back(map_scene)
+	map_scenes.push_back(map_scene_1)	
+	map_scenes.push_back(map_scene_2)	
 	
-	map_selector.add_item("Select A Map")
 	for scene in map_scenes:
-		map_selector.add_item(scene.map_name)
+		map_selector.add_item(scene.name)		
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	pass
-
+	
 func _on_host_button_pressed():
 	enet_peer.create_server(int(host_port_number.text))
 	multiplayer.multiplayer_peer = enet_peer
 	
-	add_player(multiplayer.get_unique_id())
+	var host_peer_id:int = multiplayer.get_unique_id()
 	
-	enet_peer.peer_connected.connect(add_player)
-	enet_peer.peer_disconnected.connect(remove_player)
+	EmmitMapSelected(selected_map_index)
+	add_player(host_peer_id)
+	
+	map_selector.disabled = false
+	start_game.disabled = false
+	
+	
+	enet_peer.peer_connected.connect(
+		func(peer_id):
+			add_player(peer_id)
+			var existing_player_ids = get_existing_player_ids()
+			
+			await get_tree().create_timer(1).timeout			
+			rpc("EmmitMapSelected", selected_map_index)
+			rpc("add_existing_players", existing_player_ids)
+	)
+	enet_peer.peer_disconnected.connect(		
+		func(peer_id):
+			remove_player(peer_id)
+			await get_tree().create_timer(1).timeout
+			rpc("remove_player", peer_id)
+	)
 	
 func _on_join_button_pressed():
 	enet_peer.create_client(join_ip_address.text, int(join_port_number.text))
 	multiplayer.multiplayer_peer = enet_peer
 
-func add_player(peer_id):
-	print("add_player", peer_id)
-	var player_scene = PlayerScene.new()
-	player_scene.peer_id = peer_id
-	player_scene.player_name = str(peer_id)
-	player_scene.player_scene = Player
-		
-	players.push_back(player_scene)
-	players_list.add_item(player_scene.player_name)
-	
-	emit_signal("AddedPlayer", player_scene)
-	
-func remove_player(peer_id):
-	print("remove_player", peer_id)
-	
-	var playerCounter = 0
+func get_existing_player_ids() -> Array[int]:
+	var existing_player_ids:Array[int] = []
 	for player in players:
-		if(player.peer_id == peer_id):
-			players.remove_at(playerCounter)
-			players_list.remove_item(playerCounter)
-		playerCounter +=1
-	
-	emit_signal("RemovedPlayer", peer_id)	
+		existing_player_ids.push_back(player.name.to_int())
+		
+	return existing_player_ids
 	
 
-func _on_select_map_input_item_selected(index):
-	print("_on_select_map_input_item_selected", index)
-	print("_on_select_map_input_item_selected", map_scenes[index-1])
+@rpc
+func add_existing_players(existing_peer_ids):
+	for existing_peer_id in existing_peer_ids:
+		var found_player_index = get_player_index(existing_peer_id)
+		if found_player_index == -1:
+			add_player(existing_peer_id)
+
+func add_player(peer_id):
 	
-	if(map_scenes.size() > 0 and index > 0):
-		emit_signal("MapSelected", map_scenes[index-1])
+	print("add_player", peer_id)
+	var player = preload("res://Characters/Player/player.tscn").instantiate()
+	player.name = str(peer_id)
+		
+	players.push_back(player)
+	players_list.add_item(player.name)
+		
+	emit_signal("AddedPlayer", player)
+
+@rpc
+func remove_player(peer_id) -> int:
+	print("remove_player", peer_id)
+	var found_player_index = get_player_index(peer_id)
+	
+	if(found_player_index > -1):
+		players.remove_at(found_player_index)
+		players_list.remove_item(found_player_index)	
+			
+	emit_signal("RemovedPlayer", peer_id)	
+	
+	return found_player_index
+	
+func get_player_index(peer_id:int) -> int:
+	var playerCounter = 0
+	var found_index = -1
+	for player in players:
+		if(player.name == str(peer_id)):
+			found_index = playerCounter
+		playerCounter +=1	
+	return found_index
+	
+@rpc
+func EmmitMapSelected(map_scene_index: int):	
+	print("EmmitMapSelected", map_scene_index)
+	map_selector.select(map_scene_index)
+	
+	if(map_scenes.size() > 0):
+		emit_signal("MapSelected", map_scenes[map_scene_index])
 	else:	
 		emit_signal("ClearMap")
 		
 
+func _on_select_map_input_item_selected(index):	
+	selected_map_index = index
+	emit_signal("MapSelected", map_scenes[index])
+	rpc("EmmitMapSelected", index)
+	
 func _on_item_list_property_list_changed():
 	print("_on_item_list_property_list_changed")
 

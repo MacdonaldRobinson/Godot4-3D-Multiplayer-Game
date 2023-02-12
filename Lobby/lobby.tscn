@@ -12,9 +12,6 @@ script = ExtResource("1_p1dsc")
 
 [node name="MapContainer" type="Node3D" parent="."]
 
-[node name="PlayersContainer" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.15326, 0)
-
 [connection signal="AddedPlayer" from="CanvasLayer/LobbyManagerUI" to="." method="_on_lobby_manager_ui_added_player"]
 [connection signal="ClearMap" from="CanvasLayer/LobbyManagerUI" to="." method="_on_lobby_manager_ui_clear_map"]
 [connection signal="MapSelected" from="CanvasLayer/LobbyManagerUI" to="." method="_on_lobby_manager_ui_map_selected"]
