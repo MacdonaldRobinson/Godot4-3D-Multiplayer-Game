@@ -61,17 +61,6 @@ theme_override_constants/margin_bottom = 10
 [node name="MarginContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2"]
 layout_mode = 2
 
-[node name="SelectMap" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer"]
-layout_mode = 2
-
-[node name="SelectMapLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/SelectMap"]
-layout_mode = 2
-text = "Select Map:"
-
-[node name="SelectMapInput" type="OptionButton" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/SelectMap"]
-layout_mode = 2
-size_flags_horizontal = 3
-
 [node name="PortNumber" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer"]
 layout_mode = 2
 
@@ -102,6 +91,18 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 8
 text = "Host"
+
+[node name="SelectMap" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields"]
+layout_mode = 2
+
+[node name="SelectMapLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/SelectMap"]
+layout_mode = 2
+text = "Select Map:"
+
+[node name="SelectMapInput" type="OptionButton" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/SelectMap"]
+layout_mode = 2
+size_flags_horizontal = 3
+disabled = true
 
 [node name="StartGameButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields"]
 layout_mode = 2
@@ -182,7 +183,7 @@ custom_minimum_size = Vector2(200, 360)
 layout_mode = 2
 select_mode = 1
 
-[connection signal="item_selected" from="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/SelectMap/SelectMapInput" to="." method="_on_select_map_input_item_selected"]
 [connection signal="pressed" from="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/HostButton" to="." method="_on_host_button_pressed"]
+[connection signal="item_selected" from="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/SelectMap/SelectMapInput" to="." method="_on_select_map_input_item_selected"]
 [connection signal="pressed" from="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/StartGameButton" to="." method="_on_start_game_button_pressed"]
 [connection signal="pressed" from="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Join/VBoxContainer/MarginContainer2/MarginContainer/JoinButtonFields/JoinButton" to="." method="_on_join_button_pressed"]
