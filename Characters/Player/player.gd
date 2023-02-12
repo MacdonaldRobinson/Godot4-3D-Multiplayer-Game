@@ -8,7 +8,6 @@ const JUMP_VELOCITY = 10
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 @onready var camera = $Camera3D
-@onready var player_name = $PlayerNameViewPort/PlayerName
 
 func _enter_tree():
 	set_multiplayer_authority(name.to_int())

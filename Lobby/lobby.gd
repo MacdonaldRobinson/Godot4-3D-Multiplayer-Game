@@ -53,7 +53,9 @@ func _on_lobby_manager_ui_added_player(player: Player):
 func _on_lobby_manager_ui_removed_player(peer_id):
 	print("_on_lobby_manager_ui_removed_player", peer_id)
 	var player = find_player(peer_id)
-	players_container.remove_child(player)
+	
+	if player:
+		players_container.remove_child(player)
 	
 
 
