@@ -41,29 +41,27 @@ func _on_host_button_pressed():
 	
 	var host_peer_id:int = multiplayer.get_unique_id()
 	
-	select_map(map_scenes[selected_map_index])
+	EmmitMapSelected(selected_map_index)
 	add_player(host_peer_id)
 	
 	map_selector.disabled = false
-	start_game.disabled = false
+	start_game.disabled = false	
 	
-	multiplayer.peer_connected.connect(add_player)	
-	
-#	enet_peer.peer_connected.connect(
-#		func(peer_id):
-#			add_player(peer_id)
-#			var existing_player_ids = get_existing_player_ids()
-#
-#			await get_tree().create_timer(1).timeout			
-#			rpc("EmmitMapSelected", selected_map_index)
-#			rpc("add_existing_players", existing_player_ids)
-#	)
-#	enet_peer.peer_disconnected.connect(		
-#		func(peer_id):
-#			remove_player(peer_id)
-#			await get_tree().create_timer(1).timeout
-#			rpc("remove_player", peer_id)
-#	)
+	enet_peer.peer_connected.connect(
+		func(peer_id):
+			add_player(peer_id)
+			var existing_player_ids = get_existing_player_ids()
+
+			await get_tree().create_timer(1).timeout			
+			rpc("EmmitMapSelected", selected_map_index)
+			rpc("add_existing_players", existing_player_ids)
+	)
+	enet_peer.peer_disconnected.connect(		
+		func(peer_id):
+			remove_player(peer_id)
+			await get_tree().create_timer(1).timeout
+			rpc("remove_player", peer_id)
+	)
 	
 func _on_join_button_pressed():
 	enet_peer.create_client(join_ip_address.text, int(join_port_number.text))
@@ -76,7 +74,7 @@ func get_existing_player_ids() -> Array[int]:
 		
 	return existing_player_ids
 	
-
+@rpc
 func add_existing_players(existing_peer_ids):
 	for existing_peer_id in existing_peer_ids:
 		var found_player_index = get_player_index(existing_peer_id)
@@ -88,12 +86,14 @@ func add_player(peer_id):
 	print("add_player", peer_id)
 	var player = preload("res://Characters/Player/player.tscn").instantiate()
 	player.name = str(peer_id)
+	player.set_multiplayer_authority(peer_id)
 		
 	players.push_back(player)
 	players_list.add_item(player.name)
 		
 	emit_signal("AddedPlayer", player)
 
+@rpc
 func remove_player(peer_id) -> int:
 	print("remove_player", peer_id)
 	var found_player_index = get_player_index(peer_id)
@@ -115,18 +115,22 @@ func get_player_index(peer_id:int) -> int:
 		playerCounter +=1	
 	return found_index
 	
-func select_map(map:Map):
-	emit_signal("MapSelected", map)
-	
-func _on_select_map_input_item_selected(index):	
-	selected_map_index = index
-	map_selector.select(selected_map_index)
+@rpc
+func EmmitMapSelected(map_scene_index: int):	
+	print("EmmitMapSelected", map_scene_index)
+	map_selector.select(map_scene_index)
 	
 	if(map_scenes.size() > 0):
-		select_map(map_scenes[selected_map_index])
+		emit_signal("MapSelected", map_scenes[map_scene_index])
 	else:	
 		emit_signal("ClearMap")
-			
+		
+
+func _on_select_map_input_item_selected(index):	
+	selected_map_index = index
+	emit_signal("MapSelected", map_scenes[index])
+	rpc("EmmitMapSelected", index)
+	
 func _on_item_list_property_list_changed():
 	print("_on_item_list_property_list_changed")
 
