@@ -181,12 +181,8 @@ layout_mode = 2
 custom_minimum_size = Vector2(200, 360)
 layout_mode = 2
 select_mode = 1
-item_count = 2
-item_0/text = "test"
-item_1/text = "test2"
 
 [connection signal="item_selected" from="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/SelectMap/SelectMapInput" to="." method="_on_select_map_input_item_selected"]
 [connection signal="pressed" from="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/HostButton" to="." method="_on_host_button_pressed"]
 [connection signal="pressed" from="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/StartGameButton" to="." method="_on_start_game_button_pressed"]
 [connection signal="pressed" from="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Join/VBoxContainer/MarginContainer2/MarginContainer/JoinButtonFields/JoinButton" to="." method="_on_join_button_pressed"]
-[connection signal="property_list_changed" from="MarginContainer/HBoxContainer/VBoxContainer/PlayersList" to="." method="_on_item_list_property_list_changed"]

@@ -18,4 +18,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.15326, 0)
 [connection signal="AddedPlayer" from="CanvasLayer/LobbyManagerUI" to="." method="_on_lobby_manager_ui_added_player"]
 [connection signal="ClearMap" from="CanvasLayer/LobbyManagerUI" to="." method="_on_lobby_manager_ui_clear_map"]
 [connection signal="MapSelected" from="CanvasLayer/LobbyManagerUI" to="." method="_on_lobby_manager_ui_map_selected"]
+[connection signal="RemovedPlayer" from="CanvasLayer/LobbyManagerUI" to="." method="_on_lobby_manager_ui_removed_player"]
 [connection signal="StartGame" from="CanvasLayer/LobbyManagerUI" to="." method="_on_lobby_manager_ui_start_game"]
