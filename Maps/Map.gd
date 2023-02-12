@@ -5,3 +5,10 @@ class_name Map
 
 func add_player(player: Player):
 	Players.add_child(player)
+	
+func add_players(players):
+	for player in players:
+		Players.add_child(player)
+
+func get_players():
+	return Players.get_children()

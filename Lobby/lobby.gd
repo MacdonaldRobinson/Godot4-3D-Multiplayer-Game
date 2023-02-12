@@ -2,6 +2,8 @@ extends Node3D
 
 @onready var map_container = $MapContainer
 @onready var lobby_manager_ui = $CanvasLayer/LobbyManagerUI
+@onready var players_container = $PlayersContainer
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
@@ -16,7 +18,7 @@ func clear_map():
 		map_container.remove_child(node)
 
 func _on_lobby_manager_ui_map_selected(map: Map):
-	clear_map()
+	clear_map()	
 		
 	map_container.add_child(map)
 	
@@ -29,11 +31,7 @@ func _on_lobby_manager_ui_clear_map():
 
 
 func _on_lobby_manager_ui_added_player(player: Player):
-	lobby_manager_ui.hide()
-	var current_map:Map = map_container.get_child(0)
-	
-	if(current_map):
-		current_map.add_player(player)
+	players_container.add_child(player)
 	
 	print("_on_lobby_manager_ui_added_player", player)
 	

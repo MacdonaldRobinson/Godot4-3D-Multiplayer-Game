@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://iblvcgqey3fc"]
+[gd_scene load_steps=9 format=3 uid="uid://iblvcgqey3fc"]
 
 [ext_resource type="Script" path="res://Characters/Player/player.gd" id="1_o3gvf"]
 
@@ -15,6 +15,20 @@ radius = 0.1
 height = 0.1
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_hjwbi"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_shiqn"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ikgjf"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/sync = true
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/sync = true
+properties/2/path = NodePath("Camera3D:rotation")
+properties/2/spawn = true
+properties/2/sync = true
 
 [node name="Player" type="CharacterBody3D"]
 collision_layer = 2
@@ -35,3 +49,20 @@ shape = SubResource("CapsuleShape3D_hjwbi")
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.655586, -0.542768)
 current = true
+
+[node name="PlayerName" type="Sprite3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.14698, 0)
+billboard = 2
+texture = SubResource("ViewportTexture_shiqn")
+
+[node name="PlayerNameViewPort" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(100, 30)
+
+[node name="PlayerName" type="Label" parent="PlayerNameViewPort"]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "Player"
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_ikgjf")

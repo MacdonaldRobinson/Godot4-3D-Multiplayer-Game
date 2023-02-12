@@ -8,14 +8,20 @@ const JUMP_VELOCITY = 10
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 @onready var camera = $Camera3D
+@onready var player_name = $PlayerNameViewPort/PlayerName
 
-func _ready():
+func _enter_tree():
+	set_multiplayer_authority(name.to_int())
+
+func _ready():	
+	if not is_multiplayer_authority(): return
 	
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	camera.current = true
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED	
+	
 	
 func _unhandled_input(event):
 	print("_unhandled_input", is_multiplayer_authority())
+	if not is_multiplayer_authority(): return
 			
 	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED and event is InputEventMouseMotion:
 		rotate_y(-event.relative.x * 0.005)
@@ -32,6 +38,8 @@ func _unhandled_input(event):
 		get_tree().quit()		
 
 func _physics_process(delta):
+	if not is_multiplayer_authority(): return
+	camera.current = true
 	# Add the gravity.
 	if not is_on_floor():
 		velocity.y -= gravity * delta
