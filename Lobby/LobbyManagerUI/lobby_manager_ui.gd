@@ -45,8 +45,6 @@ func _on_host_button_pressed():
 	EmmitMapSelected(selected_map_index)
 	add_player(host_peer_id)
 	
-	setup_upnp()
-	
 	map_selector.disabled = false
 	start_game.disabled = false	
 	
@@ -157,4 +155,6 @@ func setup_upnp():
 	print("Successfully Join Address ")	
 	
 	host_external_ip_address.text = upnp.query_external_address()
-	
+
+func _on_u_pn_p_button_pressed():
+	setup_upnp()
