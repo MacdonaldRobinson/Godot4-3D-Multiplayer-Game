@@ -91,6 +91,13 @@ text = "External IP:"
 
 [node name="ExternalIPInput" type="LineEdit" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/ExternalIP"]
 layout_mode = 2
+editable = false
+
+[node name="UPnPButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+text = "Setup UPnP"
 
 [node name="HostButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields"]
 layout_mode = 2
@@ -201,6 +208,7 @@ layout_mode = 2
 size_flags_vertical = 3
 select_mode = 1
 
+[connection signal="pressed" from="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/UPnPButton" to="." method="_on_u_pn_p_button_pressed"]
 [connection signal="pressed" from="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/HostButton" to="." method="_on_host_button_pressed"]
 [connection signal="item_selected" from="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/SelectMap/SelectMapInput" to="." method="_on_select_map_input_item_selected"]
 [connection signal="pressed" from="MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/StartGameButton" to="." method="_on_start_game_button_pressed"]
