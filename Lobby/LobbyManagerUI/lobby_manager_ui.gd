@@ -1,13 +1,16 @@
 extends Control
 class_name LobbyManagerUI
 
-@onready var host_port_number = $MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/PortNumber/PortNumberInput
-@onready var map_selector = $MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/SelectMap/SelectMapInput
-@onready var players_list = $MarginContainer/HBoxContainer/VBoxContainer/PlayersList
-@onready var join_ip_address = $MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Join/VBoxContainer/MarginContainer2/MarginContainer/IPAddressFields/IPAddressInput
-@onready var join_port_number = $MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Join/VBoxContainer/MarginContainer2/MarginContainer/JoinPortNumberFields/JoinPortNumberInput
-@onready var host_external_ip_address = $MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/ExternalIP/ExternalIPInput
-@onready var start_game = $MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/StartGameButton
+@onready var host_port_number = $MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/PortNumber/PortNumberInput
+@onready var map_selector = $MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/SelectMap/SelectMapInput
+@onready var players_list = $MarginContainer/HBoxContainer/VBoxContainer/PanelContainer/VBoxContainer/PlayersList
+@onready var join_ip_address = $MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Join/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/IPAddressFields/IPAddressInput
+@onready var join_port_number = $MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Join/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/JoinPortNumberFields/JoinPortNumberInput
+@onready var host_external_ip_address = $MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/ExternalIP/ExternalIPInput
+@onready var start_game = $MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/StartGameButton
+
+@export var player_packed_scene:PackedScene
+@export var map_packed_scenes:Array[PackedScene]
 
 var selected_map_index = 0
 var map_scenes: Array[Map]
@@ -22,14 +25,10 @@ signal RemovedPlayer(peer_id:int)
 signal StartGame(players:Array[Player])
 
 func _ready():	
-	var map_scene_1:Map = preload("res://Maps/Map1/map_1.tscn").instantiate()
-	var map_scene_2:Map = preload("res://Maps/Map2/map_2.tscn").instantiate()
-	
-	map_scenes.push_back(map_scene_1)	
-	map_scenes.push_back(map_scene_2)	
-	
-	for scene in map_scenes:
-		map_selector.add_item(scene.name)		
+	for map_packed_scene in map_packed_scenes:
+		var scene_instance:Map = map_packed_scene.instantiate()
+		map_scenes.push_back(scene_instance)	
+		map_selector.add_item(scene_instance.name)	
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -45,6 +44,8 @@ func _on_host_button_pressed():
 	
 	EmmitMapSelected(selected_map_index)
 	add_player(host_peer_id)
+	
+	setup_upnp()
 	
 	map_selector.disabled = false
 	start_game.disabled = false	
@@ -87,7 +88,7 @@ func add_existing_players(existing_peer_ids):
 func add_player(peer_id):
 	
 	print("add_player", peer_id)
-	var player = preload("res://Characters/Player/player.tscn").instantiate()
+	var player = player_packed_scene.instantiate()
 	player.name = str(peer_id)
 	player.set_multiplayer_authority(peer_id)
 		
@@ -127,7 +128,7 @@ func EmmitMapSelected(map_scene_index: int):
 		MapSelected.emit(map_scenes[map_scene_index])		
 	else:	
 		ClearMap.emit()		
-		
+
 
 func _on_select_map_input_item_selected(index):	
 	selected_map_index = index
@@ -140,3 +141,20 @@ func _on_item_list_property_list_changed():
 
 func _on_start_game_button_pressed():
 	StartGame.emit(players)	
+	
+func setup_upnp():
+	var upnp = UPNP.new()
+	var discover_result = upnp.discover()
+	
+	assert(discover_result == UPNP.UPNP_RESULT_SUCCESS, "UPNP Discovery Failed")
+
+	assert(upnp.get_gateway() and upnp.get_gateway().is_valid_gateway() , "UPNP Invalid Gateway")
+	
+	var map_result = upnp.add_port_mapping(int(host_port_number.text))
+	
+	assert(map_result == UPNP.UPNP_RESULT_SUCCESS, "UPNP Port Mapping Failed")
+
+	print("Successfully Join Address ")	
+	
+	host_external_ip_address.text = upnp.query_external_address()
+	

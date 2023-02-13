@@ -59,8 +59,10 @@ func _on_lobby_manager_ui_removed_player(peer_id):
 	
 	if player:
 		players_container.remove_child(player)
-	
-
+		
+@rpc("call_local")
+func HideLobbyManagerUI():
+	lobby_manager_ui.hide()
 
 func _on_lobby_manager_ui_start_game(players):
 	clear_players()
@@ -69,3 +71,5 @@ func _on_lobby_manager_ui_start_game(players):
 	
 	for player in players:
 		players_container.add_child(player)
+		
+	HideLobbyManagerUI.rpc()
