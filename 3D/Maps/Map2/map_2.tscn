@@ -1,7 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://b2nj73nv1hj5u"]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Texture2D" uid="uid://cfan7hyxhi51t" path="res://icon.svg" id="1_doltk"]
-[ext_resource type="Script" path="res://Maps/Map2/map_2.gd" id="1_kuwg4"]
+[ext_resource type="Script" path="res://3D/Maps/Map2/map_2.gd" id="1_kuwg4"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v6bkv"]
 albedo_color = Color(1, 0, 0.0156863, 1)

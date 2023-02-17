@@ -1,4 +1,4 @@
-extends Node3D
+extends Node
 
 @onready var map_container = $MapContainer
 @onready var lobby_manager_ui = $CanvasLayer/LobbyManagerUI
@@ -36,7 +36,7 @@ func find_player_index(peer_id: int):
 			return player_counter
 		player_counter +=1
 
-func _on_lobby_manager_ui_map_selected(map: Map):
+func _on_lobby_manager_ui_map_selected(map: Node):
 	clear_map()			
 	map_container.add_child(map)	
 	print("_on_lobby_manager_ui_map_selected", map)
@@ -47,7 +47,7 @@ func _on_lobby_manager_ui_clear_map():
 	clear_map()
 
 
-func _on_lobby_manager_ui_added_player(player: Player):
+func _on_lobby_manager_ui_added_player(player: Node):
 	players_container.add_child(player)
 	
 	print("_on_lobby_manager_ui_added_player", player)
