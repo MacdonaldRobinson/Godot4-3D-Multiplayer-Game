@@ -1,5 +1,4 @@
-extends CharacterBody3D
-class_name Player
+extends Player3D
 
 const SPEED = 10.0
 const JUMP_VELOCITY = 10

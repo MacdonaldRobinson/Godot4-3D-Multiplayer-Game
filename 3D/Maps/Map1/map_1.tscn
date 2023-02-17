@@ -1,0 +1,78 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Texture2D" uid="uid://cfan7hyxhi51t" path="res://icon.svg" id="1_uwnvh"]
+[ext_resource type="Script" path="res://3D/Maps/Map1/map_1.gd" id="1_xo1v0"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_yp2ip"]
+
+[sub_resource type="Sky" id="Sky_ne3b1"]
+sky_material = SubResource("ProceduralSkyMaterial_yp2ip")
+
+[sub_resource type="Environment" id="Environment_y88o4"]
+background_mode = 2
+sky = SubResource("Sky_ne3b1")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e16ac"]
+albedo_texture = ExtResource("1_uwnvh")
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_alcnv"]
+albedo_texture = ExtResource("1_uwnvh")
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i85ng"]
+uv1_triplanar = true
+
+[node name="Map1" type="Node3D"]
+script = ExtResource("1_xo1v0")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_y88o4")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.821995, 0.569495, 0, -0.569495, 0.821995, 0, 4.4604, 9.72059)
+
+[node name="Players" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.86503, 0)
+
+[node name="CSGCombiner3D4" type="CSGCombiner3D" parent="."]
+material_overlay = SubResource("StandardMaterial3D_e16ac")
+use_collision = true
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="CSGCombiner3D4"]
+material_override = SubResource("StandardMaterial3D_alcnv")
+use_collision = true
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D4/CSGCombiner3D"]
+use_collision = true
+size = Vector3(50, 10, 50)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGCombiner3D4/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.92064, 0)
+material_overlay = SubResource("StandardMaterial3D_i85ng")
+operation = 2
+size = Vector3(40, 15, 40)
+
+[node name="CSGCombiner3D2" type="CSGCombiner3D" parent="CSGCombiner3D4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45.8391, 0, 0)
+material_override = SubResource("StandardMaterial3D_alcnv")
+use_collision = true
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D4/CSGCombiner3D2"]
+use_collision = true
+size = Vector3(50, 10, 50)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGCombiner3D4/CSGCombiner3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.92064, 0)
+material_overlay = SubResource("StandardMaterial3D_i85ng")
+operation = 2
+size = Vector3(40, 15, 40)
+
+[node name="CSGCombiner3D3" type="CSGCombiner3D" parent="CSGCombiner3D4"]
+transform = Transform3D(-0.0218846, 0.999761, 0, -0.999761, -0.0218846, 0, 0, 0, 1, 26.4028, 3.5181, 0)
+operation = 2
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="CSGCombiner3D4/CSGCombiner3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0293059, 0.32423, 0)
+radius = 5.0
+height = 15.0

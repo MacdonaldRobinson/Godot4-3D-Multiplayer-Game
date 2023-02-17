@@ -1,6 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://iblvcgqey3fc"]
+[gd_scene load_steps=8 format=3 uid="uid://74vdt5kbwvy8"]
 
-[ext_resource type="Script" path="res://Characters/Player/player.gd" id="1_o3gvf"]
+[ext_resource type="Script" path="res://3D/Characters/Player/player.gd" id="1_bim6b"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_32njl"]
 albedo_color = Color(0.376471, 0.192157, 1, 1)
@@ -29,7 +29,7 @@ properties/2/sync = true
 
 [node name="Player" type="CharacterBody3D"]
 collision_layer = 2
-script = ExtResource("1_o3gvf")
+script = ExtResource("1_bim6b")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 material_overlay = SubResource("StandardMaterial3D_32njl")

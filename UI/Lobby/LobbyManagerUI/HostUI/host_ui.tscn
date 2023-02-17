@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://beum2ixbk00sb"]
+[gd_scene load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://Lobby/LobbyManagerUI/HostUI/host_ui.gd" id="1_0atv1"]
+[ext_resource type="Script" path="res://UI/Lobby/LobbyManagerUI/HostUI/host_ui.gd" id="1_0atv1"]
 
 [node name="HostUI" type="MarginContainer"]
 size_flags_horizontal = 0

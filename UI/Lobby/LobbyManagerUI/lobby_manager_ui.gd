@@ -1,40 +1,46 @@
 extends Control
 class_name LobbyManagerUI
 
-@onready var host_port_number = $MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/PortNumber/PortNumberInput
-@onready var map_selector = $MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/SelectMap/SelectMapInput
-@onready var players_list = $MarginContainer/HBoxContainer/VBoxContainer/PanelContainer/VBoxContainer/PlayersList
-@onready var join_ip_address = $MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Join/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/IPAddressFields/IPAddressInput
-@onready var join_port_number = $MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Join/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/JoinPortNumberFields/JoinPortNumberInput
-@onready var host_external_ip_address = $MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/ExternalIP/ExternalIPInput
-@onready var start_game = $MarginContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/StartGameButton
+@onready var host_port_number = $Panel/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/PortNumber/PortNumberInput
+@onready var map_selector = $Panel/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/SelectMap/SelectMapInput
+@onready var players_list = $Panel/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer/VBoxContainer/PlayersList
+@onready var join_ip_address = $Panel/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Join/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/IPAddressFields/IPAddressInput
+@onready var join_port_number = $Panel/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Join/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/JoinPortNumberFields/JoinPortNumberInput
+@onready var host_external_ip_address = $Panel/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/ExternalIP/ExternalIPInput
+@onready var start_game = $Panel/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/StartGameButton
 
 @export var player_packed_scene:PackedScene
 @export var map_packed_scenes:Array[PackedScene]
 
 var selected_map_index = 0
-var map_scenes: Array[Map]
-var players: Array[Player]
+var map_scenes: Array[Node]
+var players: Array[PlayerData]
 
 var enet_peer = ENetMultiplayerPeer.new()
 
-signal MapSelected(map:Map)
+signal MapSelected(map:Node)
 signal ClearMap()
-signal AddedPlayer(player:Player)
+signal AddedPlayer(player:PlayerData)
 signal RemovedPlayer(peer_id:int)
-signal StartGame(players:Array[Player])
+signal StartGame(players:Array[PlayerData])
 
 func _ready():	
 	for map_packed_scene in map_packed_scenes:
-		var scene_instance:Map = map_packed_scene.instantiate()
+		var scene_instance:Node = map_packed_scene.instantiate()
 		map_scenes.push_back(scene_instance)	
 		map_selector.add_item(scene_instance.name)	
-	
-# Called every frame. 'delta' is the elapsed time since the previous frame.
+
 func _process(delta):
 	pass
 	
+func get_self_peer_data()-> PlayerData:
+	for player in players:
+		if player.PeerId == multiplayer.get_unique_id():
+			return player
+	return null
+	
 func _on_host_button_pressed():
+	players.clear()
 	players_list.clear()
 	
 	enet_peer.create_server(int(host_port_number.text))
@@ -72,7 +78,7 @@ func _on_join_button_pressed():
 func get_existing_player_ids() -> Array[int]:
 	var existing_player_ids:Array[int] = []
 	for player in players:
-		existing_player_ids.push_back(player.name.to_int())
+		existing_player_ids.push_back(player.PeerId)
 		
 	return existing_player_ids
 	

@@ -1,26 +1,33 @@
-[gd_scene load_steps=3 format=3 uid="uid://dwemry3kfgodi"]
+[gd_scene load_steps=3 format=3 uid="uid://bbd3hq8j2e1o3"]
 
-[ext_resource type="PackedScene" uid="uid://bu1hfecohiqq5" path="res://Lobby/LobbyManagerUI/lobby_manager_ui.tscn" id="1_7b6y8"]
-[ext_resource type="Script" path="res://Lobby/lobby.gd" id="1_p1dsc"]
+[ext_resource type="Script" path="res://UI/Lobby/lobby.gd" id="1_drlkp"]
+[ext_resource type="PackedScene" uid="uid://b3sw25dinxbc5" path="res://UI/Lobby/LobbyManagerUI/lobby_manager_ui.tscn" id="2_pphnt"]
 
-[node name="Lobby" type="Node3D"]
-script = ExtResource("1_p1dsc")
+[node name="Lobby" type="Node"]
+script = ExtResource("1_drlkp")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="LobbyManagerUI" parent="CanvasLayer" instance=ExtResource("1_7b6y8")]
+[node name="LobbyManagerUI" parent="CanvasLayer" instance=ExtResource("2_pphnt")]
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_right = 1152.0
+offset_bottom = 648.0
+grow_horizontal = 1
+grow_vertical = 1
+size_flags_vertical = 3
 
-[node name="MapContainer" type="Node3D" parent="."]
+[node name="MapContainer" type="Node" parent="."]
 
-[node name="PlayersContainer" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55639, 0)
+[node name="PlayersContainer" type="Node" parent="."]
 
 [node name="MapSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("res://Maps/Map1/map_1.tscn", "res://Maps/Map2/map_2.tscn")
+_spawnable_scenes = PackedStringArray("res://3D/Maps/Map1/map_1.tscn", "res://3D/Maps/Map2/map_2.tscn")
 spawn_path = NodePath("../MapContainer")
 
 [node name="PlayersSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("res://Characters/Player/player.tscn")
+_spawnable_scenes = PackedStringArray("res://3D/Characters/Player/player.tscn")
 spawn_path = NodePath("../PlayersContainer")
 
 [connection signal="AddedPlayer" from="CanvasLayer/LobbyManagerUI" to="." method="_on_lobby_manager_ui_added_player"]
