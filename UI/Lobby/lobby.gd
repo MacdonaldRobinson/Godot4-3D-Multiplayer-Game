@@ -4,6 +4,8 @@ extends Node
 @onready var lobby_manager_ui = $CanvasLayer/LobbyManagerUI
 @onready var players_container = $PlayersContainer
 
+@export var player_scene: PackedScene
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
@@ -13,7 +15,7 @@ func _unhandled_input(event):
 		get_tree().quit()		
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(delta):	
 	pass
 
 func clear_map():
@@ -37,8 +39,8 @@ func find_player_index(peer_id: int):
 		player_counter +=1
 
 func _on_lobby_manager_ui_map_selected(map: Node):
-	clear_map()			
-	map_container.add_child(map)	
+	#clear_map()			
+	#map_container.add_child(map)	
 	print("_on_lobby_manager_ui_map_selected", map)
 
 
@@ -47,10 +49,8 @@ func _on_lobby_manager_ui_clear_map():
 	clear_map()
 
 
-func _on_lobby_manager_ui_added_player(player: Node):
-	players_container.add_child(player)
-	
-	print("_on_lobby_manager_ui_added_player", player)
+func _on_lobby_manager_ui_added_player(player_data: PlayerData):
+	print("_on_lobby_manager_ui_added_player", player_data)
 	
 
 func _on_lobby_manager_ui_removed_player(peer_id):
@@ -64,12 +64,19 @@ func _on_lobby_manager_ui_removed_player(peer_id):
 func HideLobbyManagerUI():
 	lobby_manager_ui.hide()
 
-func _on_lobby_manager_ui_start_game(players):
+func _on_lobby_manager_ui_start_game(map:Node, players_data:Array[PlayerData]):
+	clear_map()
 	clear_players()
+	
+	map_container.add_child(map)
 	
 	var current_map = map_container.get_child(0)
 	
-	for player in players:
-		players_container.add_child(player)
+	for player_data in players_data:
+		var player_scene_instance = player_scene.instantiate()
+		player_scene_instance.name = str(player_data.PeerId)
+		player_scene_instance.set_player_data(player_data)
+		
+		players_container.add_child(player_scene_instance)
 		
 	HideLobbyManagerUI.rpc()

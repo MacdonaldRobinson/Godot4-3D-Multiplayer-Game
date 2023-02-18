@@ -1,4 +1,5 @@
-extends Player3D
+extends CharacterBody3D
+class_name Player3D
 
 const SPEED = 10.0
 const JUMP_VELOCITY = 10
@@ -7,18 +8,23 @@ const JUMP_VELOCITY = 10
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 @onready var camera = $Camera3D
+@onready var player_name_label = $PlayerName
+@export var player_data:PlayerData
 
 func _enter_tree():
 	set_multiplayer_authority(name.to_int())
 
 func _ready():	
-	if not is_multiplayer_authority(): return
+	player_name_label.text = name
+	if not is_multiplayer_authority(): return	
 	
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED	
 	
 	
+func set_player_data(player_data: PlayerData):
+	self.player_data = player_data			
+		
 func _unhandled_input(event):
-	print("_unhandled_input", is_multiplayer_authority())
 	if not is_multiplayer_authority(): return
 			
 	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED and event is InputEventMouseMotion:
@@ -34,7 +40,12 @@ func _unhandled_input(event):
 
 func _physics_process(delta):
 	if not is_multiplayer_authority(): return
+	
 	camera.current = true
+	
+	if player_data: 
+		player_name_label.text = player_data.PlayerName
+
 	# Add the gravity.
 	if not is_on_floor():
 		velocity.y -= gravity * delta
