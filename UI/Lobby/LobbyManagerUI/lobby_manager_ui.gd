@@ -1,13 +1,15 @@
 extends Control
 class_name LobbyManagerUI
 
-@onready var host_port_number = $Panel/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/PortNumber/PortNumberInput
-@onready var map_selector = $Panel/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/SelectMap/SelectMapInput
-@onready var players_list = $Panel/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer/VBoxContainer/PlayersList
-@onready var join_ip_address = $Panel/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Join/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/IPAddressFields/IPAddressInput
-@onready var join_port_number = $Panel/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Join/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/JoinPortNumberFields/JoinPortNumberInput
-@onready var host_external_ip_address = $Panel/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/ExternalIP/ExternalIPInput
-@onready var start_game = $Panel/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/StartGameButton
+@onready var host_port_number:LineEdit  = $Panel/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/HBoxContainer3/PortNumber/PortNumberInput
+@onready var map_selector:OptionButton = $Panel/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/HBoxContainer2/SelectMap/SelectMapInput
+@onready var players_list:ItemList  = $Panel/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/PanelContainer/VBoxContainer/PlayersList
+@onready var join_ip_address:LineEdit = $Panel/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Join/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/HBoxContainer2/IPAddressFields/IPAddressInput
+@onready var join_port_number:LineEdit = $Panel/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Join/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/HBoxContainer2/JoinPortNumberFields/JoinPortNumberInput
+@onready var host_external_ip_address:LineEdit = $Panel/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/HBoxContainer/ExternalIP/ExternalIPInput
+@onready var start_game:Button = $Panel/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/HBoxContainer2/StartGameButton
+@onready var host_player_name:LineEdit = $Panel/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/HostPlayerName/HostPlayerNameInput
+@onready var join_player_name:LineEdit = $Panel/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Join/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/PlayerName/PlayerNameInput
 
 @export var map_packed_scenes:Array[PackedScene]
 
@@ -22,6 +24,7 @@ signal ClearMap()
 signal AddedPlayer(player:PlayerData)
 signal RemovedPlayer(peer_id:int)
 signal StartGame(players:Array[PlayerData])
+signal UpdatedPlayerData(player_data: PlayerData)
 
 func _ready():	
 	for map_packed_scene in map_packed_scenes:
@@ -42,14 +45,23 @@ func _on_host_button_pressed():
 	var host_peer_id:int = multiplayer.get_unique_id()
 	
 	EmmitMapSelected(selected_map_index)
-	add_player(host_peer_id)
+	
+	var player_data: PlayerData = PlayerData.new()
+	player_data.PeerId = host_peer_id
+	player_data.PlayerName = host_player_name.text
+	
+	add_player(player_data)
 	
 	map_selector.disabled = false
 	start_game.disabled = false	
 	
 	enet_peer.peer_connected.connect(
 		func(peer_id):
-			add_player(peer_id)
+#			var new_player_data: PlayerData = PlayerData.new()
+#			new_player_data.PeerId = peer_id
+#			new_player_data.PlayerName = str(peer_id)		
+#
+#			add_player(new_player_data)
 			
 			await get_tree().create_timer(1).timeout			
 			EmmitMapSelected.rpc(selected_map_index)
@@ -69,6 +81,45 @@ func _on_join_button_pressed():
 	enet_peer.create_client(join_ip_address.text, int(join_port_number.text))
 	multiplayer.multiplayer_peer = enet_peer
 	
+	multiplayer.connected_to_server.connect(
+		func():
+			var player_data: PlayerData = PlayerData.new()
+			player_data.PeerId = multiplayer.get_unique_id()
+			player_data.PlayerName = join_player_name.text
+				
+			update_player_data.rpc(var_to_str(player_data))
+	)
+	
+	
+func update_player_list(player_data: PlayerData):
+	var list_item_count = players_list.item_count
+	var found_index = -1
+	for index in list_item_count:
+		var index_text = players_list.get_item_text(index)
+		if index_text == str(player_data.PeerId):
+			found_index = index
+			
+	if found_index == -1:
+		players_list.add_item(player_data.PlayerName)
+	else:
+		players_list.set_item_text(found_index, player_data.PlayerName)
+					
+	
+	
+@rpc("any_peer")
+func update_player_data(player_data_str:String):
+	var player_data: PlayerData = str_to_var(player_data_str)
+	var player_index = get_player_index(player_data.PeerId)
+	if player_index > -1:
+		players_data[player_index] == player_data
+	else:
+		players_data.push_back(player_data)
+	
+	update_player_list(player_data)
+
+	UpdatedPlayerData.emit(player_data)
+
+	
 @rpc
 func add_existing_players(serialized_existing_players_data):
 	var existing_players_data:Array[PlayerData] = str_to_var(serialized_existing_players_data)
@@ -76,17 +127,13 @@ func add_existing_players(serialized_existing_players_data):
 	for existing_player_data in existing_players_data:	
 		var found_player_index = get_player_index(existing_player_data.PeerId)
 		if found_player_index == -1:
-			add_player(existing_player_data.PeerId)
+			add_player(existing_player_data)
 
-func add_player(peer_id):
+func add_player(player_data: PlayerData):
 		
-	print("add_player", peer_id)
+	print("add_player", player_data)
 	
-	var player_data = PlayerData.new()
-	player_data.PeerId = peer_id
-	player_data.PlayerName = str(peer_id)
-	
-	var existing_player_index = get_player_index(peer_id)
+	var existing_player_index = get_player_index(player_data.PeerId)
 	
 	if existing_player_index == -1:
 		players_data.push_back(player_data)
@@ -124,6 +171,10 @@ func EmmitMapSelected(map_scene_index: int):
 		MapSelected.emit(map_scenes[map_scene_index])		
 	else:	
 		ClearMap.emit()		
+		
+@rpc("call_local")
+func EmmitStartGame():
+	StartGame.emit(map_scenes[selected_map_index], players_data)
 
 
 func _on_select_map_input_item_selected(index):	
@@ -136,7 +187,7 @@ func _on_item_list_property_list_changed():
 
 
 func _on_start_game_button_pressed():
-	StartGame.emit(map_scenes[selected_map_index], players_data)	
+		EmmitStartGame.rpc()
 	
 func setup_upnp():
 	var upnp = UPNP.new()

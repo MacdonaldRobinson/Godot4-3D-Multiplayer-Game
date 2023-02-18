@@ -24,16 +24,9 @@ size_flags_vertical = 3
 
 [node name="PlayersContainer" type="Node" parent="."]
 
-[node name="MapSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("res://3D/Maps/Map1/map_1.tscn", "res://3D/Maps/Map2/map_2.tscn")
-spawn_path = NodePath("../MapContainer")
-
-[node name="PlayersSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("res://3D/Player/player.tscn")
-spawn_path = NodePath("../PlayersContainer")
-
 [connection signal="AddedPlayer" from="CanvasLayer/LobbyManagerUI" to="." method="_on_lobby_manager_ui_added_player"]
 [connection signal="ClearMap" from="CanvasLayer/LobbyManagerUI" to="." method="_on_lobby_manager_ui_clear_map"]
 [connection signal="MapSelected" from="CanvasLayer/LobbyManagerUI" to="." method="_on_lobby_manager_ui_map_selected"]
 [connection signal="RemovedPlayer" from="CanvasLayer/LobbyManagerUI" to="." method="_on_lobby_manager_ui_removed_player"]
 [connection signal="StartGame" from="CanvasLayer/LobbyManagerUI" to="." method="_on_lobby_manager_ui_start_game"]
+[connection signal="UpdatedPlayerData" from="CanvasLayer/LobbyManagerUI" to="." method="_on_lobby_manager_ui_updated_player_data"]

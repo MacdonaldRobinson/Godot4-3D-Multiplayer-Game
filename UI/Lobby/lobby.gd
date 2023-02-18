@@ -60,9 +60,6 @@ func _on_lobby_manager_ui_removed_player(peer_id):
 	if player:
 		players_container.remove_child(player)
 		
-@rpc("call_local")
-func HideLobbyManagerUI():
-	lobby_manager_ui.hide()
 
 func _on_lobby_manager_ui_start_game(map:Node, players_data:Array[PlayerData]):
 	clear_map()
@@ -79,4 +76,12 @@ func _on_lobby_manager_ui_start_game(map:Node, players_data:Array[PlayerData]):
 		
 		players_container.add_child(player_scene_instance)
 		
-	HideLobbyManagerUI.rpc()
+	lobby_manager_ui.hide()
+
+
+func _on_lobby_manager_ui_updated_player_data(player_data: PlayerData):
+	var player = find_player(player_data.PeerId)
+	
+	if player:
+		player.set_player_data(player_data)
+	

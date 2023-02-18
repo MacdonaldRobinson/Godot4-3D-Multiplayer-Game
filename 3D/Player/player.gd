@@ -16,13 +16,13 @@ func _enter_tree():
 
 func _ready():	
 	player_name_label.text = name
+		
 	if not is_multiplayer_authority(): return	
 	
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED	
 	
-	
 func set_player_data(player_data: PlayerData):
-	self.player_data = player_data			
+	self.player_data = player_data
 		
 func _unhandled_input(event):
 	if not is_multiplayer_authority(): return
@@ -39,13 +39,14 @@ func _unhandled_input(event):
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED	
 
 func _physics_process(delta):
+	
+	if player_data: 
+		player_name_label.text = player_data.PlayerName
+		
 	if not is_multiplayer_authority(): return
 	
 	camera.current = true
 	
-	if player_data: 
-		player_name_label.text = player_data.PlayerName
-
 	# Add the gravity.
 	if not is_on_floor():
 		velocity.y -= gravity * delta

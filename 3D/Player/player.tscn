@@ -44,7 +44,7 @@ mesh = SubResource("SphereMesh_0tlfo")
 shape = SubResource("CapsuleShape3D_hjwbi")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.655586, -0.542768)
+transform = Transform3D(1, 0, 0, 0, 0.962032, 0.272935, 0, -0.272935, 0.962032, 0, 1.31329, 1.42939)
 current = true
 
 [node name="PlayerName" type="Label3D" parent="."]
