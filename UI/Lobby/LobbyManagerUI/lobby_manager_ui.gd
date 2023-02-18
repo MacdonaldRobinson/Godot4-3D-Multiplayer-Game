@@ -10,12 +10,14 @@ class_name LobbyManagerUI
 @onready var start_game:Button = $Panel/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/HBoxContainer2/StartGameButton
 @onready var host_player_name:LineEdit = $Panel/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/HostPlayerName/HostPlayerNameInput
 @onready var join_player_name:LineEdit = $Panel/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Join/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/PlayerName/PlayerNameInput
+@onready var chat: Chat = $Panel/VBoxContainer/MarginContainer/VBoxContainer/Chat
 
 @export var map_packed_scenes:Array[PackedScene]
 
 var selected_map_index = 0
 var map_scenes: Array[Node]
 var players_data: Array[PlayerData]
+var allChatMessages: Array[Message] =  []
 
 var enet_peer = ENetMultiplayerPeer.new()
 
@@ -207,3 +209,25 @@ func setup_upnp():
 
 func _on_u_pn_p_button_pressed():
 	setup_upnp()
+
+
+func _on_chat_send_message(messageTest: String):
+	print("Send Message", messageTest)
+	
+	var remote_sender_id = multiplayer.get_remote_sender_id()
+	var player_index = get_player_index(remote_sender_id)
+	
+	if player_index == -1:
+		return
+
+	var message: Message = Message.new()
+	message.PeerId = remote_sender_id	
+	message.PlayerName = players_data[player_index].PlayerName
+	message.MessageText = messageTest
+	
+	allChatMessages.push_back(message)
+	
+	chat.RenderMessages(allChatMessages)
+	
+	
+	

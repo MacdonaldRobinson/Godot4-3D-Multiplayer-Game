@@ -43,7 +43,7 @@ func _physics_process(delta):
 	if player_data: 
 		player_name_label.text = player_data.PlayerName
 		
-	if not is_multiplayer_authority(): return
+	if  not is_multiplayer_authority(): return
 	
 	camera.current = true
 	

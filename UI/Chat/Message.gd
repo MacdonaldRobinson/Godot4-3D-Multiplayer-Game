@@ -1,5 +1,6 @@
 extends Resource
 class_name Message
 
-var UserName: String
+var PeerId: int
+var PlayerName: String
 var MessageText: String
