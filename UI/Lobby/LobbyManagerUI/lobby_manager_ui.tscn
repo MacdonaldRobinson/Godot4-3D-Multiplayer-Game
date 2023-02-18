@@ -1,7 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://b3sw25dinxbc5"]
+[gd_scene load_steps=5 format=3 uid="uid://b3sw25dinxbc5"]
 
 [ext_resource type="Script" path="res://UI/Lobby/LobbyManagerUI/lobby_manager_ui.gd" id="1_t3gre"]
-[ext_resource type="PackedScene" uid="uid://74vdt5kbwvy8" path="res://3D/Characters/Player/player.tscn" id="2_edr50"]
 [ext_resource type="PackedScene" path="res://3D/Maps/Map1/map_1.tscn" id="3_7n3oi"]
 [ext_resource type="PackedScene" path="res://3D/Maps/Map2/map_2.tscn" id="4_0u71p"]
 [ext_resource type="PackedScene" uid="uid://1mt36r6kfk52" path="res://UI/Chat/Chat.tscn" id="5_owj8s"]
@@ -14,7 +13,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_t3gre")
-player_packed_scene = ExtResource("2_edr50")
 map_packed_scenes = Array[PackedScene]([ExtResource("3_7n3oi"), ExtResource("4_0u71p")])
 
 [node name="Panel" type="Panel" parent="."]

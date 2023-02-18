@@ -1,6 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://74vdt5kbwvy8"]
+[gd_scene load_steps=8 format=3 uid="uid://dyxkn7iwmi5bk"]
 
-[ext_resource type="Script" path="res://3D/Characters/Player/player.gd" id="1_bim6b"]
+[ext_resource type="Script" path="res://3D/Player/player.gd" id="1_87lbp"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_32njl"]
 albedo_color = Color(0.376471, 0.192157, 1, 1)
@@ -29,7 +29,7 @@ properties/2/sync = true
 
 [node name="Player" type="CharacterBody3D"]
 collision_layer = 2
-script = ExtResource("1_bim6b")
+script = ExtResource("1_87lbp")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 material_overlay = SubResource("StandardMaterial3D_32njl")
@@ -46,6 +46,11 @@ shape = SubResource("CapsuleShape3D_hjwbi")
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.655586, -0.542768)
 current = true
+
+[node name="PlayerName" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.12074, 0)
+billboard = 2
+text = "Player Name"
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_ikgjf")

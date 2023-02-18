@@ -9,12 +9,11 @@ class_name LobbyManagerUI
 @onready var host_external_ip_address = $Panel/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/ExternalIP/ExternalIPInput
 @onready var start_game = $Panel/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer3/Host_Join/VBoxContainer/Host/PanelContainer/VBoxContainer/MarginContainer2/MarginContainer/HostButtonFields/StartGameButton
 
-@export var player_packed_scene:PackedScene
 @export var map_packed_scenes:Array[PackedScene]
 
 var selected_map_index = 0
 var map_scenes: Array[Node]
-var players: Array[PlayerData]
+var players_data: Array[PlayerData]
 
 var enet_peer = ENetMultiplayerPeer.new()
 
@@ -29,18 +28,12 @@ func _ready():
 		var scene_instance:Node = map_packed_scene.instantiate()
 		map_scenes.push_back(scene_instance)	
 		map_selector.add_item(scene_instance.name)	
-
+	
+# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	pass
 	
-func get_self_peer_data()-> PlayerData:
-	for player in players:
-		if player.PeerId == multiplayer.get_unique_id():
-			return player
-	return null
-	
 func _on_host_button_pressed():
-	players.clear()
 	players_list.clear()
 	
 	enet_peer.create_server(int(host_port_number.text))
@@ -57,11 +50,12 @@ func _on_host_button_pressed():
 	enet_peer.peer_connected.connect(
 		func(peer_id):
 			add_player(peer_id)
-			var existing_player_ids = get_existing_player_ids()
-
+			
 			await get_tree().create_timer(1).timeout			
 			EmmitMapSelected.rpc(selected_map_index)
-			add_existing_players.rpc(existing_player_ids)
+			
+			var serilizedData = var_to_str(players_data)
+			add_existing_players.rpc(serilizedData)
 	)
 	enet_peer.peer_disconnected.connect(		
 		func(peer_id):
@@ -74,40 +68,38 @@ func _on_join_button_pressed():
 	players_list.clear()
 	enet_peer.create_client(join_ip_address.text, int(join_port_number.text))
 	multiplayer.multiplayer_peer = enet_peer
-
-func get_existing_player_ids() -> Array[int]:
-	var existing_player_ids:Array[int] = []
-	for player in players:
-		existing_player_ids.push_back(player.PeerId)
-		
-	return existing_player_ids
 	
 @rpc
-func add_existing_players(existing_peer_ids):
-	for existing_peer_id in existing_peer_ids:
-		var found_player_index = get_player_index(existing_peer_id)
+func add_existing_players(serialized_existing_players_data):
+	var existing_players_data:Array[PlayerData] = str_to_var(serialized_existing_players_data)
+	
+	for existing_player_data in existing_players_data:	
+		var found_player_index = get_player_index(existing_player_data.PeerId)
 		if found_player_index == -1:
-			add_player(existing_peer_id)
+			add_player(existing_player_data.PeerId)
 
 func add_player(peer_id):
-	
+		
 	print("add_player", peer_id)
-	var player = player_packed_scene.instantiate()
-	player.name = str(peer_id)
-	player.set_multiplayer_authority(peer_id)
-		
-	players.push_back(player)
-	players_list.add_item(player.name)
-		
-	#emit_signal("AddedPlayer", player)
-
+	
+	var player_data = PlayerData.new()
+	player_data.PeerId = peer_id
+	player_data.PlayerName = str(peer_id)
+	
+	var existing_player_index = get_player_index(peer_id)
+	
+	if existing_player_index == -1:
+		players_data.push_back(player_data)
+		players_list.add_item(player_data.PlayerName)
+		AddedPlayer.emit(player_data)		
+	
 @rpc
 func remove_player(peer_id) -> int:
 	print("remove_player", peer_id)
 	var found_player_index = get_player_index(peer_id)
 	
 	if(found_player_index > -1):
-		players.remove_at(found_player_index)
+		players_data.remove_at(found_player_index)
 		players_list.remove_item(found_player_index)	
 	
 	RemovedPlayer.emit(peer_id)	
@@ -117,8 +109,8 @@ func remove_player(peer_id) -> int:
 func get_player_index(peer_id:int) -> int:
 	var playerCounter = 0
 	var found_index = -1
-	for player in players:
-		if(player.name == str(peer_id)):
+	for player_data in players_data:
+		if(player_data.PeerId == peer_id):
 			found_index = playerCounter
 		playerCounter +=1	
 	return found_index
@@ -144,7 +136,7 @@ func _on_item_list_property_list_changed():
 
 
 func _on_start_game_button_pressed():
-	StartGame.emit(players)	
+	StartGame.emit(map_scenes[selected_map_index], players_data)	
 	
 func setup_upnp():
 	var upnp = UPNP.new()
