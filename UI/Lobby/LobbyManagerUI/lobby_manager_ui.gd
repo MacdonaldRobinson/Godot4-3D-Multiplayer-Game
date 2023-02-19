@@ -16,8 +16,6 @@ class_name LobbyManagerUI
 
 var selected_map_index = 0
 var map_scenes: Array[Node]
-var players_data: Array[PlayerData]
-var allChatMessages: Array[Message] =  []
 
 var enet_peer = ENetMultiplayerPeer.new()
 
@@ -51,6 +49,7 @@ func _on_host_button_pressed():
 	var player_data: PlayerData = PlayerData.new()
 	player_data.PeerId = host_peer_id
 	player_data.PlayerName = host_player_name.text
+	player_data.SelectedCharacter = GameState.selected_character
 	
 	add_player(player_data)
 	
@@ -59,16 +58,10 @@ func _on_host_button_pressed():
 	
 	enet_peer.peer_connected.connect(
 		func(peer_id):
-#			var new_player_data: PlayerData = PlayerData.new()
-#			new_player_data.PeerId = peer_id
-#			new_player_data.PlayerName = str(peer_id)		
-#
-#			add_player(new_player_data)
-			
 			await get_tree().create_timer(1).timeout			
 			EmmitMapSelected.rpc(selected_map_index)
 			
-			var serilizedData = var_to_str(players_data)
+			var serilizedData = var_to_str(GameState.players_data)
 			add_existing_players.rpc(serilizedData)
 	)
 	enet_peer.peer_disconnected.connect(		
@@ -88,10 +81,10 @@ func _on_join_button_pressed():
 			var player_data: PlayerData = PlayerData.new()
 			player_data.PeerId = multiplayer.get_unique_id()
 			player_data.PlayerName = join_player_name.text
-				
+			player_data.SelectedCharacter = GameState.selected_character
+			
 			update_player_data.rpc(var_to_str(player_data))
 	)
-	
 	
 func update_player_list(player_data: PlayerData):
 	var list_item_count = players_list.item_count
@@ -105,17 +98,16 @@ func update_player_list(player_data: PlayerData):
 		players_list.add_item(player_data.PlayerName)
 	else:
 		players_list.set_item_text(found_index, player_data.PlayerName)
-					
-	
+
 	
 @rpc("any_peer")
 func update_player_data(player_data_str:String):
 	var player_data: PlayerData = str_to_var(player_data_str)
-	var player_index = get_player_index(player_data.PeerId)
+	var player_index = GameState.get_player_index(player_data.PeerId)
 	if player_index > -1:
-		players_data[player_index] == player_data
+		GameState.players_data[player_index] == player_data
 	else:
-		players_data.push_back(player_data)
+		GameState.players_data.push_back(player_data)
 	
 	update_player_list(player_data)
 
@@ -127,7 +119,7 @@ func add_existing_players(serialized_existing_players_data):
 	var existing_players_data:Array[PlayerData] = str_to_var(serialized_existing_players_data)
 	
 	for existing_player_data in existing_players_data:	
-		var found_player_index = get_player_index(existing_player_data.PeerId)
+		var found_player_index = GameState.get_player_index(existing_player_data.PeerId)
 		if found_player_index == -1:
 			add_player(existing_player_data)
 
@@ -135,34 +127,25 @@ func add_player(player_data: PlayerData):
 		
 	print("add_player", player_data)
 	
-	var existing_player_index = get_player_index(player_data.PeerId)
+	var existing_player_index = GameState.get_player_index(player_data.PeerId)
 	
 	if existing_player_index == -1:
-		players_data.push_back(player_data)
+		GameState.players_data.push_back(player_data)
 		players_list.add_item(player_data.PlayerName)
 		AddedPlayer.emit(player_data)		
 	
 @rpc
 func remove_player(peer_id) -> int:
 	print("remove_player", peer_id)
-	var found_player_index = get_player_index(peer_id)
+	var found_player_index = GameState.get_player_index(peer_id)
 	
 	if(found_player_index > -1):
-		players_data.remove_at(found_player_index)
+		GameState.players_data.remove_at(found_player_index)
 		players_list.remove_item(found_player_index)	
 	
 	RemovedPlayer.emit(peer_id)	
 	
 	return found_player_index
-	
-func get_player_index(peer_id:int) -> int:
-	var playerCounter = 0
-	var found_index = -1
-	for player_data in players_data:
-		if(player_data.PeerId == peer_id):
-			found_index = playerCounter
-		playerCounter +=1	
-	return found_index
 	
 @rpc
 func EmmitMapSelected(map_scene_index: int):	
@@ -176,7 +159,7 @@ func EmmitMapSelected(map_scene_index: int):
 		
 @rpc("call_local")
 func EmmitStartGame():
-	StartGame.emit(map_scenes[selected_map_index], players_data)
+	StartGame.emit(map_scenes[selected_map_index], GameState.players_data)
 
 
 func _on_select_map_input_item_selected(index):	
@@ -188,8 +171,8 @@ func _on_item_list_property_list_changed():
 	print("_on_item_list_property_list_changed")
 
 
-func _on_start_game_button_pressed():
-		EmmitStartGame.rpc()
+func _on_start_game_button_pressed():	
+	EmmitStartGame.rpc()
 	
 func setup_upnp():
 	var upnp = UPNP.new()
@@ -215,19 +198,19 @@ func _on_chat_send_message(messageTest: String):
 	print("Send Message", messageTest)
 	
 	var remote_sender_id = multiplayer.get_remote_sender_id()
-	var player_index = get_player_index(remote_sender_id)
+	var player_index = GameState.get_player_index(remote_sender_id)
 	
 	if player_index == -1:
 		return
 
 	var message: Message = Message.new()
 	message.PeerId = remote_sender_id	
-	message.PlayerName = players_data[player_index].PlayerName
+	message.PlayerName = GameState.players_data[player_index].PlayerName
 	message.MessageText = messageTest
 	
-	allChatMessages.push_back(message)
+	GameState.allChatMessages.push_back(message)
 	
-	chat.RenderMessages(allChatMessages)
+	chat.RenderMessages(GameState.allChatMessages)
 	
 	
 	

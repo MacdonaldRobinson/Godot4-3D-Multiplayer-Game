@@ -1,20 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://dyxkn7iwmi5bk"]
+[gd_scene load_steps=4 format=3 uid="uid://dyxkn7iwmi5bk"]
 
 [ext_resource type="Script" path="res://3D/Player/player.gd" id="1_87lbp"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_32njl"]
-albedo_color = Color(0.376471, 0.192157, 1, 1)
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_45k0o"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dorqt"]
-albedo_color = Color(1, 0.109804, 0, 1)
-
-[sub_resource type="SphereMesh" id="SphereMesh_0tlfo"]
-radius = 0.1
-height = 0.1
-
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_hjwbi"]
+[ext_resource type="PackedScene" uid="uid://cij7m1iasll73" path="res://3D/Characters/Character1/character_1.tscn" id="2_ofnqp"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ikgjf"]
 properties/0/path = NodePath(".:position")
@@ -31,17 +18,9 @@ properties/2/sync = true
 collision_layer = 2
 script = ExtResource("1_87lbp")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-material_overlay = SubResource("StandardMaterial3D_32njl")
-mesh = SubResource("CapsuleMesh_45k0o")
+[node name="CharacterContainer" type="Node3D" parent="."]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.537354, -0.481568)
-material_overlay = SubResource("StandardMaterial3D_dorqt")
-mesh = SubResource("SphereMesh_0tlfo")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-shape = SubResource("CapsuleShape3D_hjwbi")
+[node name="Character1" parent="CharacterContainer" instance=ExtResource("2_ofnqp")]
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.962032, 0.272935, 0, -0.272935, 0.962032, 0, 1.31329, 1.42939)
