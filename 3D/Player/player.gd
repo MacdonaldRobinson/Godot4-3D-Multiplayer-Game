@@ -10,6 +10,7 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 @onready var camera: Camera3D = $Camera3D
 @onready var player_name_label: Label3D = $PlayerName
 @onready var character_container: Node3D = $CharacterContainer
+@onready var health_bar: HealthBar = $HealthBar
 
 func _enter_tree():
 	set_multiplayer_authority(name.to_int())
@@ -26,7 +27,7 @@ func update_from_player_data():
 	
 	if player_data: 
 		player_name_label.text = player_data.PlayerName
-		
+		health_bar.set_health(player_data.Health)	
 		var character_instance: Character = player_data.SelectedCharacter.instantiate()		
 		
 		for child in character_container.get_children():
