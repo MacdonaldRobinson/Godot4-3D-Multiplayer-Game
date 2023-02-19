@@ -101,3 +101,8 @@ func _on_lobby_manager_ui_updated_player_data(player_data: PlayerData):
 	if player:
 		player.set_player_data(player_data)
 	
+
+func _on_lobby_manager_ui_server_disconnected():
+	clear_map()
+	lobby_manager_ui.show()
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
