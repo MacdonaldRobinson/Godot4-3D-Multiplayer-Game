@@ -25,6 +25,7 @@ signal AddedPlayer(player:PlayerData)
 signal RemovedPlayer(peer_id:int)
 signal StartGame(players:Array[PlayerData])
 signal UpdatedPlayerData(player_data: PlayerData)
+signal ServerDisconnected()
 
 func _ready():	
 	for map_packed_scene in map_packed_scenes:
@@ -86,6 +87,12 @@ func _on_join_button_pressed():
 			update_player_data.rpc(var_to_str(player_data))
 	)
 	
+	multiplayer.server_disconnected.connect(
+		func():
+			players_list.clear()
+			ServerDisconnected.emit()
+	)
+	
 func update_player_list(player_data: PlayerData):
 	var list_item_count = players_list.item_count
 	var found_index = -1
@@ -103,12 +110,7 @@ func update_player_list(player_data: PlayerData):
 @rpc("any_peer")
 func update_player_data(player_data_str:String):
 	var player_data: PlayerData = str_to_var(player_data_str)
-	var player_index = GameState.get_player_index(player_data.PeerId)
-	if player_index > -1:
-		GameState.players_data[player_index] == player_data
-	else:
-		GameState.players_data.push_back(player_data)
-	
+	GameState.update_player_data(player_data)	
 	update_player_list(player_data)
 
 	UpdatedPlayerData.emit(player_data)

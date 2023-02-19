@@ -1,12 +1,14 @@
-[gd_scene load_steps=7 format=3 uid="uid://dyxkn7iwmi5bk"]
+[gd_scene load_steps=8 format=3 uid="uid://dyxkn7iwmi5bk"]
 
 [ext_resource type="Script" path="res://3D/Player/player.gd" id="1_87lbp"]
 [ext_resource type="PackedScene" uid="uid://cij7m1iasll73" path="res://3D/Characters/Character1/character_1.tscn" id="2_ofnqp"]
 [ext_resource type="PackedScene" uid="uid://ci7op5fo4e2dw" path="res://3D/Weapons/Weapon1/weapon_1.tscn" id="3_e8rl4"]
 [ext_resource type="PackedScene" uid="uid://8oxk3ylv16t0" path="res://3D/Player/UI/HealthBar/health_bar.tscn" id="3_l2x1o"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_ivk1a"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_m3trn"]
 viewport_path = NodePath("SubViewportContainer/SubViewport")
+
+[sub_resource type="SeparationRayShape3D" id="SeparationRayShape3D_e5jv8"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ikgjf"]
 properties/0/path = NodePath(".:position")
@@ -15,9 +17,18 @@ properties/0/sync = true
 properties/1/path = NodePath(".:rotation")
 properties/1/spawn = true
 properties/1/sync = true
-properties/2/path = NodePath("Camera3D:rotation")
+properties/2/path = NodePath("CameraSpringArm:rotation")
 properties/2/spawn = true
 properties/2/sync = true
+properties/3/path = NodePath("CameraSpringArm/Camera3D:rotation")
+properties/3/spawn = true
+properties/3/sync = true
+properties/4/path = NodePath("WeaponContainer:rotation")
+properties/4/spawn = true
+properties/4/sync = true
+properties/5/path = NodePath("WeaponContainer:position")
+properties/5/spawn = true
+properties/5/sync = true
 
 [node name="Player" type="CharacterBody3D"]
 collision_layer = 2
@@ -28,13 +39,9 @@ script = ExtResource("1_87lbp")
 [node name="Character1" parent="CharacterContainer" instance=ExtResource("2_ofnqp")]
 
 [node name="WeaponContainer" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.787735, 0, -0.0865535)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.871431, 0, -0.0865535)
 
 [node name="Weapon1" parent="WeaponContainer" instance=ExtResource("3_e8rl4")]
-
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.951991, 0.306127, 0, -0.306127, 0.951991, 0, 1.74584, 2.37967)
-current = true
 
 [node name="PlayerName" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.12074, 0)
@@ -42,7 +49,17 @@ billboard = 2
 text = "Player Name"
 
 [node name="HealthBar" parent="." instance=ExtResource("3_l2x1o")]
-texture = SubResource("ViewportTexture_ivk1a")
+texture = SubResource("ViewportTexture_m3trn")
+
+[node name="CameraSpringArm" type="SpringArm3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.13908, 0.842602, 0)
+shape = SubResource("SeparationRayShape3D_e5jv8")
+spring_length = 3.0
+margin = 0.2
+
+[node name="Camera3D" type="Camera3D" parent="CameraSpringArm"]
+transform = Transform3D(1, 0, 0, 0, 0.951991, 0.306127, 0, -0.306127, 0.951991, 0.731563, 1.74584, 2.37967)
+current = true
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_ikgjf")
