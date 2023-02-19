@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=7 format=3 uid="uid://byru7s8nhpy3d"]
 
 [ext_resource type="Texture2D" uid="uid://cfan7hyxhi51t" path="res://icon.svg" id="1_doltk"]
 [ext_resource type="Script" path="res://3D/Maps/Map2/map_2.gd" id="1_kuwg4"]

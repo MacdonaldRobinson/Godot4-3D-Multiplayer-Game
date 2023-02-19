@@ -1,7 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://davfsrqib78ae"]
+[gd_scene load_steps=10 format=3 uid="uid://davfsrqib78ae"]
 
 [ext_resource type="Texture2D" uid="uid://cfan7hyxhi51t" path="res://icon.svg" id="1_uwnvh"]
 [ext_resource type="Script" path="res://3D/Maps/Map1/map_1.gd" id="1_xo1v0"]
+[ext_resource type="PackedScene" uid="uid://dyxkn7iwmi5bk" path="res://3D/Player/player.tscn" id="2_ocvp5"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_yp2ip"]
 
@@ -34,6 +35,8 @@ transform = Transform3D(1, 0, 0, 0, 0.821995, 0.569495, 0, -0.569495, 0.821995, 
 
 [node name="Players" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.86503, 0)
+
+[node name="Player" parent="Players" instance=ExtResource("2_ocvp5")]
 
 [node name="CSGCombiner3D4" type="CSGCombiner3D" parent="."]
 material_overlay = SubResource("StandardMaterial3D_e16ac")

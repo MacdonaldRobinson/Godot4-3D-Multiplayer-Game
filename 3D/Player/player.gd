@@ -7,9 +7,9 @@ const JUMP_VELOCITY = 10
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
-@onready var camera = $Camera3D
-@onready var player_name_label = $PlayerName
-@export var player_data:PlayerData
+@onready var camera: Camera3D = $Camera3D
+@onready var player_name_label: Label3D = $PlayerName
+@onready var character_container: Node3D = $CharacterContainer
 
 func _enter_tree():
 	set_multiplayer_authority(name.to_int())
@@ -20,10 +20,33 @@ func _ready():
 	if not is_multiplayer_authority(): return	
 	
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED	
+
+func update_from_player_data():
+	var player_data: PlayerData = GameState.get_player_data(name.to_int())
+	
+	if player_data: 
+		player_name_label.text = player_data.PlayerName
+		
+		var character_instance: Character = player_data.SelectedCharacter.instantiate()		
+		
+		for child in character_container.get_children():
+			if child.name == character_instance.name:
+				child.collision_shape.reparent(self)	
+				return				
+		
+		clear_character_container()
+		
+		character_container.add_child(character_instance)	
+		
+	
+func clear_character_container():
+	for child in character_container.get_children():
+		character_container.remove_child(child)
 	
 func set_player_data(player_data: PlayerData):
-	self.player_data = player_data
-		
+	var player_index = GameState.get_player_index(player_data.PeerId)
+	GameState.players_data[player_index] = player_data
+	
 func _unhandled_input(event):
 	if not is_multiplayer_authority(): return
 			
@@ -39,10 +62,8 @@ func _unhandled_input(event):
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED	
 
 func _physics_process(delta):
+	update_from_player_data()
 	
-	if player_data: 
-		player_name_label.text = player_data.PlayerName
-		
 	if  not is_multiplayer_authority(): return
 	
 	camera.current = true

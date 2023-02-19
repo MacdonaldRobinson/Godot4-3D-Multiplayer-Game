@@ -1,0 +1,85 @@
+[gd_scene load_steps=11 format=3 uid="uid://bnfgn7nijpiin"]
+
+[ext_resource type="Script" path="res://CharacterSelector/character_selector.gd" id="1_5n0hj"]
+[ext_resource type="PackedScene" uid="uid://cij7m1iasll73" path="res://3D/Characters/Character1/character_1.tscn" id="2_jjahp"]
+[ext_resource type="Texture2D" uid="uid://cfan7hyxhi51t" path="res://icon.svg" id="3_c1xle"]
+[ext_resource type="PackedScene" uid="uid://q7jo0j0j2itx" path="res://3D/Characters/Character2/character_2.tscn" id="3_ytphf"]
+[ext_resource type="PackedScene" uid="uid://5yx6rdtawlqu" path="res://3D/Characters/Character3/character_3.tscn" id="4_1o568"]
+[ext_resource type="PackedScene" uid="uid://bbd3hq8j2e1o3" path="res://UI/Lobby/lobby.tscn" id="5_216de"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_tu1wd"]
+
+[sub_resource type="Sky" id="Sky_2v1nn"]
+sky_material = SubResource("ProceduralSkyMaterial_tu1wd")
+
+[sub_resource type="Environment" id="Environment_pjn04"]
+background_mode = 2
+sky = SubResource("Sky_2v1nn")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tobl4"]
+albedo_texture = ExtResource("3_c1xle")
+uv1_triplanar = true
+
+[node name="CharacterSelector" type="Node3D"]
+script = ExtResource("1_5n0hj")
+character_scenes = Array[PackedScene]([ExtResource("2_jjahp"), ExtResource("3_ytphf"), ExtResource("4_1o568")])
+lobby_scene = ExtResource("5_216de")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_pjn04")
+
+[node name="Stage" type="CSGBox3D" parent="."]
+material_override = SubResource("StandardMaterial3D_tobl4")
+size = Vector3(5, 0.5, 3)
+
+[node name="CharacterContainer" type="Node3D" parent="."]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 1.18402, 0)
+
+[node name="Character1" parent="CharacterContainer" instance=ExtResource("2_jjahp")]
+transform = Transform3D(-0.996713, 0, 0.0810165, 0, 1, 0, -0.0810165, 0, -0.996713, 0, 0, 0)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.980264, 0.197692, 0, -0.197692, 0.980264, 0, 2.12716, 4.17183)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="CharacterSelecterUI" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/CharacterSelecterUI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CharacterList" type="VBoxContainer" parent="CanvasLayer/CharacterSelecterUI/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CharactersList" type="ItemList" parent="CanvasLayer/CharacterSelecterUI/HBoxContainer/CharacterList"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+item_count = 2
+item_0/text = "Item 1"
+item_1/text = "Item 2"
+
+[node name="SelectCharacter" type="Button" parent="CanvasLayer/CharacterSelecterUI/HBoxContainer/CharacterList"]
+layout_mode = 2
+text = "Select Character"
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/CharacterSelecterUI/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.5
+
+[connection signal="item_selected" from="CanvasLayer/CharacterSelecterUI/HBoxContainer/CharacterList/CharactersList" to="." method="_on_characters_list_item_selected"]
+[connection signal="pressed" from="CanvasLayer/CharacterSelecterUI/HBoxContainer/CharacterList/SelectCharacter" to="." method="_on_select_character_pressed"]

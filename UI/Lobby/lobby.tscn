@@ -1,16 +1,16 @@
 [gd_scene load_steps=4 format=3 uid="uid://bbd3hq8j2e1o3"]
 
 [ext_resource type="Script" path="res://UI/Lobby/lobby.gd" id="1_drlkp"]
-[ext_resource type="PackedScene" uid="uid://dyxkn7iwmi5bk" path="res://3D/Player/player.tscn" id="2_eopma"]
+[ext_resource type="PackedScene" uid="uid://dyxkn7iwmi5bk" path="res://3D/Player/player.tscn" id="2_3v1im"]
 [ext_resource type="PackedScene" uid="uid://b3sw25dinxbc5" path="res://UI/Lobby/LobbyManagerUI/lobby_manager_ui.tscn" id="2_pphnt"]
 
-[node name="Lobby" type="Node"]
+[node name="Lobby" type="Node3D"]
 script = ExtResource("1_drlkp")
-player_scene = ExtResource("2_eopma")
+player_scene = ExtResource("2_3v1im")
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="LobbyManager" type="CanvasLayer" parent="."]
 
-[node name="LobbyManagerUI" parent="CanvasLayer" instance=ExtResource("2_pphnt")]
+[node name="LobbyManagerUI" parent="LobbyManager" instance=ExtResource("2_pphnt")]
 anchors_preset = 0
 anchor_right = 0.0
 anchor_bottom = 0.0
@@ -20,13 +20,11 @@ grow_horizontal = 1
 grow_vertical = 1
 size_flags_vertical = 3
 
-[node name="MapContainer" type="Node" parent="."]
+[node name="MapContainer" type="Node3D" parent="."]
 
-[node name="PlayersContainer" type="Node" parent="."]
-
-[connection signal="AddedPlayer" from="CanvasLayer/LobbyManagerUI" to="." method="_on_lobby_manager_ui_added_player"]
-[connection signal="ClearMap" from="CanvasLayer/LobbyManagerUI" to="." method="_on_lobby_manager_ui_clear_map"]
-[connection signal="MapSelected" from="CanvasLayer/LobbyManagerUI" to="." method="_on_lobby_manager_ui_map_selected"]
-[connection signal="RemovedPlayer" from="CanvasLayer/LobbyManagerUI" to="." method="_on_lobby_manager_ui_removed_player"]
-[connection signal="StartGame" from="CanvasLayer/LobbyManagerUI" to="." method="_on_lobby_manager_ui_start_game"]
-[connection signal="UpdatedPlayerData" from="CanvasLayer/LobbyManagerUI" to="." method="_on_lobby_manager_ui_updated_player_data"]
+[connection signal="AddedPlayer" from="LobbyManager/LobbyManagerUI" to="." method="_on_lobby_manager_ui_added_player"]
+[connection signal="ClearMap" from="LobbyManager/LobbyManagerUI" to="." method="_on_lobby_manager_ui_clear_map"]
+[connection signal="MapSelected" from="LobbyManager/LobbyManagerUI" to="." method="_on_lobby_manager_ui_map_selected"]
+[connection signal="RemovedPlayer" from="LobbyManager/LobbyManagerUI" to="." method="_on_lobby_manager_ui_removed_player"]
+[connection signal="StartGame" from="LobbyManager/LobbyManagerUI" to="." method="_on_lobby_manager_ui_start_game"]
+[connection signal="UpdatedPlayerData" from="LobbyManager/LobbyManagerUI" to="." method="_on_lobby_manager_ui_updated_player_data"]
