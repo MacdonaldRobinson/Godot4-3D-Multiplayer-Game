@@ -54,7 +54,6 @@ theme_override_constants/margin_bottom = 10
 layout_mode = 2
 focus_mode = 2
 bbcode_enabled = true
-text = "This is some text"
 selection_enabled = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel2/VBoxContainer"]
