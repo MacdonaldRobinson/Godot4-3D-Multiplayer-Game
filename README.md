@@ -1,6 +1,7 @@
 # Godot4-Multiplayer-Game
 
 A Multiplayer game built with Godot 4 with the following features:
+- Character Selector
 - Lobby
 - Chat
 - Player Data Sync
