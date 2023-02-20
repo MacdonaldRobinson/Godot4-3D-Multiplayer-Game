@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://UI/Lobby/LobbyManagerUI/lobby_manager_ui.gd" id="1_t3gre"]
 [ext_resource type="PackedScene" uid="uid://davfsrqib78ae" path="res://3D/Maps/Map1/map_1.tscn" id="3_7n3oi"]
-[ext_resource type="PackedScene" path="res://3D/Maps/Map2/map_2.tscn" id="4_0u71p"]
+[ext_resource type="PackedScene" uid="uid://byru7s8nhpy3d" path="res://3D/Maps/Map2/map_2.tscn" id="4_0u71p"]
 [ext_resource type="PackedScene" uid="uid://1mt36r6kfk52" path="res://UI/Chat/Chat.tscn" id="5_owj8s"]
 
 [node name="LobbyManagerUI" type="Control"]

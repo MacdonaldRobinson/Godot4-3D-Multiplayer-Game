@@ -12,6 +12,7 @@ sky_material = SubResource("ProceduralSkyMaterial_yp2ip")
 [sub_resource type="Environment" id="Environment_y88o4"]
 background_mode = 2
 sky = SubResource("Sky_ne3b1")
+tonemap_exposure = 2.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e16ac"]
 albedo_texture = ExtResource("1_uwnvh")

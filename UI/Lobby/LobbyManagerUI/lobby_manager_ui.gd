@@ -152,6 +152,7 @@ func remove_player(peer_id) -> int:
 @rpc
 func EmmitMapSelected(map_scene_index: int):	
 	print("EmmitMapSelected", map_scene_index)
+	selected_map_index = map_scene_index
 	map_selector.select(map_scene_index)
 	
 	if(map_scenes.size() > 0):
