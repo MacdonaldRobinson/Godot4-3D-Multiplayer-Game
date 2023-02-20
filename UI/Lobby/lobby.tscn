@@ -27,5 +27,6 @@ size_flags_vertical = 3
 [connection signal="MapSelected" from="LobbyManager/LobbyManagerUI" to="." method="_on_lobby_manager_ui_map_selected"]
 [connection signal="RemovedPlayer" from="LobbyManager/LobbyManagerUI" to="." method="_on_lobby_manager_ui_removed_player"]
 [connection signal="ServerDisconnected" from="LobbyManager/LobbyManagerUI" to="." method="_on_lobby_manager_ui_server_disconnected"]
+[connection signal="SpawnPlayer" from="LobbyManager/LobbyManagerUI" to="." method="_on_lobby_manager_ui_spawn_player"]
 [connection signal="StartGame" from="LobbyManager/LobbyManagerUI" to="." method="_on_lobby_manager_ui_start_game"]
 [connection signal="UpdatedPlayerData" from="LobbyManager/LobbyManagerUI" to="." method="_on_lobby_manager_ui_updated_player_data"]

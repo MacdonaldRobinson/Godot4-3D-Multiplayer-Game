@@ -21,11 +21,13 @@ var enet_peer = ENetMultiplayerPeer.new()
 
 signal MapSelected(map:Node)
 signal ClearMap()
-signal AddedPlayer(player:PlayerData)
+signal AddedPlayer(player_data:PlayerData)
 signal RemovedPlayer(peer_id:int)
-signal StartGame(players:Array[PlayerData])
+signal StartGame(players_data:Array[PlayerData])
 signal UpdatedPlayerData(player_data: PlayerData)
+signal ServerConnected()
 signal ServerDisconnected()
+signal SpawnPlayer(player_data:PlayerData)
 
 func _ready():	
 	for map_packed_scene in map_packed_scenes:
@@ -45,14 +47,14 @@ func _on_host_button_pressed():
 	
 	var host_peer_id:int = multiplayer.get_unique_id()
 	
-	EmmitMapSelected(selected_map_index)
+	rpc_emmit_map_selected(selected_map_index)
 	
 	var player_data: PlayerData = PlayerData.new()
 	player_data.PeerId = host_peer_id
 	player_data.PlayerName = host_player_name.text
 	player_data.SelectedCharacter = GameState.selected_character
 	
-	add_player(player_data)
+	rpc_add_or_update_player_data(var_to_str(player_data))
 	
 	map_selector.disabled = false
 	start_game.disabled = false	
@@ -60,23 +62,37 @@ func _on_host_button_pressed():
 	enet_peer.peer_connected.connect(
 		func(peer_id):
 			await get_tree().create_timer(1).timeout			
-			EmmitMapSelected.rpc(selected_map_index)
-			
-			var serilizedData = var_to_str(GameState.players_data)
-			add_existing_players.rpc(serilizedData)
+			rpc_emmit_map_selected.rpc_id(peer_id, selected_map_index)
+
+			var existing_players_serialized_data = var_to_str(GameState.players_data)
+			rpc_player_registered.rpc_id(peer_id, existing_players_serialized_data)
+
+			if GameState.is_game_started:
+				rpc_game_already_started.rpc_id(peer_id)
+				
 	)
 	enet_peer.peer_disconnected.connect(		
 		func(peer_id):
-			remove_player(peer_id)
+			rpc_remove_player(peer_id)
 			await get_tree().create_timer(1).timeout
-			remove_player.rpc(peer_id)
+			rpc_remove_player.rpc(peer_id)
 	)
 	
+@rpc("any_peer")
+func rpc_game_already_started():
+	pass
+
+@rpc("any_peer", "call_local")
+func rpc_spawn_player(player_data_str: String):
+	var player_data: PlayerData = str_to_var(player_data_str)
+	SpawnPlayer.emit(player_data)
+		
+	
 func _on_join_button_pressed():
-	players_list.clear()
 	enet_peer.create_client(join_ip_address.text, int(join_port_number.text))
 	multiplayer.multiplayer_peer = enet_peer
-	
+		
+		
 	multiplayer.connected_to_server.connect(
 		func():
 			var player_data: PlayerData = PlayerData.new()
@@ -84,7 +100,9 @@ func _on_join_button_pressed():
 			player_data.PlayerName = join_player_name.text
 			player_data.SelectedCharacter = GameState.selected_character
 			
-			update_player_data.rpc(var_to_str(player_data))
+			rpc_add_or_update_player_data.rpc(var_to_str(player_data))
+			
+			ServerConnected.emit()
 	)
 	
 	multiplayer.server_disconnected.connect(
@@ -93,52 +111,52 @@ func _on_join_button_pressed():
 			ServerDisconnected.emit()
 	)
 	
-func update_player_list(player_data: PlayerData):
-	var list_item_count = players_list.item_count
-	var found_index = -1
-	for index in list_item_count:
-		var index_text = players_list.get_item_text(index)
-		if index_text == str(player_data.PeerId):
-			found_index = index
-			
-	if found_index == -1:
-		players_list.add_item(player_data.PlayerName)
-	else:
-		players_list.set_item_text(found_index, player_data.PlayerName)
+@rpc("any_peer")
+func rpc_player_registered(existing_players_str:String):
+	print("rpc_player_registered")
 
+	rpc_add_existing_players(existing_players_str)
+
+	var player_data: PlayerData = PlayerData.new()
+	player_data.PeerId = multiplayer.get_unique_id()
+	player_data.PlayerName = join_player_name.text
+	player_data.SelectedCharacter = GameState.selected_character	
+	
+	rpc_add_or_update_player_data.rpc(var_to_str(player_data))
+	
+	
+func rpc_add_existing_players(serialized_existing_players_data):
+	print("rpc_add_existing_players")
+	var existing_players_data:Array[PlayerData] = str_to_var(serialized_existing_players_data)	
+	for existing_player_data in existing_players_data:	
+		rpc_add_or_update_player_data(var_to_str(existing_player_data))
+
+
+@rpc("any_peer")
+func rpc_add_or_update_player_data(player_data_str: String):		
+	print("rpc_add_or_update_player_data")
+	var new_player_data:PlayerData = str_to_var(player_data_str)
+	
+	var found_player:bool = false
+	
+	for saved_player_data in GameState.players_data:
+		if new_player_data.PeerId == saved_player_data.PeerId:
+			GameState.update_player_data(new_player_data)
+			found_player = true
+			AddedPlayer.emit(new_player_data)
+			
+	if not found_player:
+		GameState.players_data.push_back(new_player_data)
+
+	players_list.clear()
+			
+	for saved_player_data in GameState.players_data:
+		players_list.add_item(saved_player_data.PlayerName)
+		
 	
 @rpc("any_peer")
-func update_player_data(player_data_str:String):
-	var player_data: PlayerData = str_to_var(player_data_str)
-	GameState.update_player_data(player_data)	
-	update_player_list(player_data)
-
-	UpdatedPlayerData.emit(player_data)
-
-	
-@rpc
-func add_existing_players(serialized_existing_players_data):
-	var existing_players_data:Array[PlayerData] = str_to_var(serialized_existing_players_data)
-	
-	for existing_player_data in existing_players_data:	
-		var found_player_index = GameState.get_player_index(existing_player_data.PeerId)
-		if found_player_index == -1:
-			add_player(existing_player_data)
-
-func add_player(player_data: PlayerData):
-		
-	print("add_player", player_data)
-	
-	var existing_player_index = GameState.get_player_index(player_data.PeerId)
-	
-	if existing_player_index == -1:
-		GameState.players_data.push_back(player_data)
-		players_list.add_item(player_data.PlayerName)
-		AddedPlayer.emit(player_data)		
-	
-@rpc
-func remove_player(peer_id) -> int:
-	print("remove_player", peer_id)
+func rpc_remove_player(peer_id) -> int:
+	print("rpc_remove_player", peer_id)
 	var found_player_index = GameState.get_player_index(peer_id)
 	
 	if(found_player_index > -1):
@@ -149,9 +167,9 @@ func remove_player(peer_id) -> int:
 	
 	return found_player_index
 	
-@rpc
-func EmmitMapSelected(map_scene_index: int):	
-	print("EmmitMapSelected", map_scene_index)
+@rpc("any_peer")
+func rpc_emmit_map_selected(map_scene_index: int):	
+	print("rpc_emmit_map_selected", map_scene_index)
 	selected_map_index = map_scene_index
 	map_selector.select(map_scene_index)
 	
@@ -160,22 +178,23 @@ func EmmitMapSelected(map_scene_index: int):
 	else:	
 		ClearMap.emit()		
 		
-@rpc("call_local")
-func EmmitStartGame():
+@rpc("any_peer","call_local")
+func rpc_emmit_start_game():
+	GameState.is_game_started = true
 	StartGame.emit(map_scenes[selected_map_index], GameState.players_data)
 
 
 func _on_select_map_input_item_selected(index):	
 	selected_map_index = index
 	MapSelected.emit(map_scenes[index])	
-	EmmitMapSelected.rpc(index)	
+	rpc_emmit_map_selected.rpc(index)	
 	
 func _on_item_list_property_list_changed():
 	print("_on_item_list_property_list_changed")
 
 
 func _on_start_game_button_pressed():	
-	EmmitStartGame.rpc()
+	rpc_emmit_start_game.rpc()
 	
 func setup_upnp():
 	var upnp = UPNP.new()

@@ -4,6 +4,7 @@ var players_data: Array[PlayerData]
 var allChatMessages: Array[Message] =  []
 
 var selected_character: PackedScene
+var is_game_started: bool
 
 func print_stats():
 	print("-----Start: Print Stats ------")

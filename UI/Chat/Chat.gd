@@ -7,7 +7,7 @@ class_name Chat
 
 signal SendMessage(message:String)
 
-@rpc("call_local", "any_peer")
+@rpc("any_peer", "call_local")
 func EmmitSendMessage(messageText:String):		
 	SendMessage.emit(messageText)
 	

@@ -63,13 +63,41 @@ func _on_lobby_manager_ui_map_selected(map: Node):
 func _on_lobby_manager_ui_clear_map():
 	print("_on_lobby_manager_ui_clear_map")
 	clear_map()
+	
+func is_player_spawned(player_data: PlayerData)->bool:
+	var players_container = selected_map.get_players_container()
+	
+	for player_node in players_container.get_children():
+		if player_node.name == str(player_data.PeerId):			
+			return true
+	
+	return false
 
+func spawn_player(player_data: PlayerData):
+	if is_player_spawned(player_data):
+		print("Player already spawned")
+		return
+
+	var players_container = selected_map.get_players_container()
+	
+	var player_instance = player_scene.instantiate()
+	player_instance.name = str(player_data.PeerId)
+	player_instance.set_player_data(player_data)
+
+	players_container.add_child(player_instance)
+	
+	print("Player spawned")
+	
 
 func _on_lobby_manager_ui_added_player(player_data: PlayerData):
 	print("_on_lobby_manager_ui_added_player", player_data)
 	
+	
 
 func _on_lobby_manager_ui_removed_player(peer_id):
+	if not selected_map:
+		return
+		
 	print("_on_lobby_manager_ui_removed_player", peer_id)
 	var player = find_player(peer_id)
 	var players_container = selected_map.get_players_container()
@@ -79,6 +107,8 @@ func _on_lobby_manager_ui_removed_player(peer_id):
 		
 
 func _on_lobby_manager_ui_start_game(map:Map3D, players_data:Array[PlayerData]):
+	print("_on_lobby_manager_ui_start_game")
+	
 	clear_map()
 
 	selected_map = map
@@ -108,3 +138,7 @@ func _on_lobby_manager_ui_server_disconnected():
 	clear_map()
 	lobby_manager_ui.show()
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+
+
+func _on_lobby_manager_ui_spawn_player(player_data: PlayerData):
+	spawn_player(player_data)
