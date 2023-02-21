@@ -21,7 +21,7 @@ func fire():
 	new_bullet.top_level = true
 	bullet_spawn_point.add_child(new_bullet)			
 	
-	var force: Vector3 = -new_bullet.transform.basis.z * 5000	
+	var force: Vector3 = -new_bullet.transform.basis.z * 3000	
 	new_bullet.apply_central_force(force)		
 	
 	new_bullet.HitPlayer.connect(

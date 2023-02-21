@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://davfsrqib78ae"]
+[gd_scene load_steps=12 format=3 uid="uid://davfsrqib78ae"]
 
 [ext_resource type="Texture2D" uid="uid://cfan7hyxhi51t" path="res://icon.svg" id="1_uwnvh"]
 [ext_resource type="Script" path="res://3D/Maps/Map1/map_1.gd" id="1_xo1v0"]
@@ -25,6 +25,15 @@ uv1_triplanar = true
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i85ng"]
 uv1_triplanar = true
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3rfae"]
+albedo_color = Color(0.584314, 0, 0.00784314, 1)
+albedo_texture = ExtResource("1_uwnvh")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ygqi1"]
+albedo_color = Color(0, 0.576471, 0.0745098, 1)
+albedo_texture = ExtResource("1_uwnvh")
+emission_energy_multiplier = 14.62
+
 [node name="Map1" type="Node3D"]
 script = ExtResource("1_xo1v0")
 
@@ -32,51 +41,68 @@ script = ExtResource("1_xo1v0")
 environment = SubResource("Environment_y88o4")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.821995, 0.569495, 0, -0.569495, 0.821995, 0, 4.4604, 9.72059)
+transform = Transform3D(1, 0, 0, 0, 0.821995, 0.569495, 0, -0.569495, 0.821995, 0, 6.34183, 4.38057)
 
 [node name="Players" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.86503, 0)
 
 [node name="Player" parent="Players" instance=ExtResource("2_ocvp5")]
 
-[node name="CSGCombiner3D4" type="CSGCombiner3D" parent="."]
+[node name="Terrain2" type="CSGCombiner3D" parent="."]
 material_overlay = SubResource("StandardMaterial3D_e16ac")
 use_collision = true
 
-[node name="CSGCombiner3D" type="CSGCombiner3D" parent="CSGCombiner3D4"]
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="Terrain2"]
 material_override = SubResource("StandardMaterial3D_alcnv")
 use_collision = true
 
-[node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D4/CSGCombiner3D"]
+[node name="CSGBox3D" type="CSGBox3D" parent="Terrain2/CSGCombiner3D"]
 use_collision = true
-size = Vector3(50, 10, 50)
+size = Vector3(100, 20, 50)
 
-[node name="CSGBox3D2" type="CSGBox3D" parent="CSGCombiner3D4/CSGCombiner3D"]
+[node name="CSGBox3D2" type="CSGBox3D" parent="Terrain2/CSGCombiner3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.92064, 0)
 material_overlay = SubResource("StandardMaterial3D_i85ng")
 operation = 2
-size = Vector3(40, 15, 40)
+size = Vector3(90, 25, 40)
 
-[node name="CSGCombiner3D2" type="CSGCombiner3D" parent="CSGCombiner3D4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45.8391, 0, 0)
-material_override = SubResource("StandardMaterial3D_alcnv")
-use_collision = true
-
-[node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D4/CSGCombiner3D2"]
-use_collision = true
-size = Vector3(50, 10, 50)
-
-[node name="CSGBox3D2" type="CSGBox3D" parent="CSGCombiner3D4/CSGCombiner3D2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.92064, 0)
-material_overlay = SubResource("StandardMaterial3D_i85ng")
-operation = 2
-size = Vector3(40, 15, 40)
-
-[node name="CSGCombiner3D3" type="CSGCombiner3D" parent="CSGCombiner3D4"]
-transform = Transform3D(-0.0218846, 0.999761, 0, -0.999761, -0.0218846, 0, 0, 0, 1, 26.4028, 3.5181, 0)
+[node name="CSGCombiner3D3" type="CSGCombiner3D" parent="Terrain2"]
+transform = Transform3D(-0.0218846, 0.999761, 0, -0.999761, -0.0218846, 0, 0, 0, 1, 26.4028, -1.64403, 0)
 operation = 2
 
-[node name="CSGCylinder3D" type="CSGCylinder3D" parent="CSGCombiner3D4/CSGCombiner3D3"]
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="Terrain2/CSGCombiner3D3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0293059, 0.32423, 0)
 radius = 5.0
 height = 15.0
+
+[node name="RedGoal" type="CSGCombiner3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40.6238, -3.94838, -0.053268)
+material_override = SubResource("StandardMaterial3D_3rfae")
+use_collision = true
+collision_layer = 7
+collision_mask = 7
+
+[node name="CSGBox3D" type="CSGBox3D" parent="RedGoal"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.06999, 1.76505, 0)
+size = Vector3(5, 10, 15)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="RedGoal"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.555737, 1.75456, 0)
+operation = 2
+size = Vector3(6, 9, 14)
+
+[node name="GreenGoal" type="CSGCombiner3D" parent="."]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -41.4354, -3.94838, -0.053268)
+material_override = SubResource("StandardMaterial3D_ygqi1")
+use_collision = true
+collision_layer = 7
+collision_mask = 7
+
+[node name="CSGBox3D" type="CSGBox3D" parent="GreenGoal"]
+transform = Transform3D(1, 0, -7.10543e-15, 0, 1, 0, 7.10543e-15, 0, 1, 2.06999, 1.76505, 0)
+size = Vector3(5, 10, 15)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="GreenGoal"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.555737, 1.75456, 0)
+operation = 2
+size = Vector3(6, 9, 14)
