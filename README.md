@@ -11,7 +11,7 @@ A Multiplayer game built with Godot 4 with the following features:
 - Health
 
 ## Instructions:
-- Use WASD keys to mpve
+- Use WASD keys to move
 - Use Space Bar to Jump
 - Use Right mouse button to Shoot
 
