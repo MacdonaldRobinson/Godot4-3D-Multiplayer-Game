@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://b1oaxhwynka8f"]
+
+[ext_resource type="Script" path="res://3D/Objects/Weapons/Weapon1/weapon_1.gd" id="1_fstmg"]
+[ext_resource type="PackedScene" uid="uid://cwaq2t0he2hg6" path="res://3D/Objects/Weapons/Weapon1/Bullet/bullet.tscn" id="2_hajmk"]
+
+[node name="Weapon1" type="Node3D"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+script = ExtResource("1_fstmg")
+bullet_scene = ExtResource("2_hajmk")
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
+use_collision = true
+collision_layer = 2
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.0329768, -0.545224)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D"]
+
+[node name="BulletsSpawnPoint" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.04078)

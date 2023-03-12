@@ -3,7 +3,7 @@
 // that they need an Internet connection to run the project if desired.
 // Incrementing CACHE_VERSION will kick off the install event and force
 // previously cached resources to be updated from the network.
-const CACHE_VERSION = "1676938525|27650729876";
+const CACHE_VERSION = "1678628827|309591018";
 const CACHE_PREFIX = "Godot4-Multiplay-sw-cache-";
 const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
 const OFFLINE_URL = "Godot4-Multiplayer-Game.offline.html";
